@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.JDialog;
@@ -14,12 +17,12 @@ import py.com.hoteleria.abm.FormCliente;
 import py.com.hoteleria.dao.ClienteDAO;
 import py.com.hoteleria.model.Cliente;
 
-public class ClienteController implements ActionListener,KeyListener{
+public class ClienteController implements ActionListener,KeyListener,WindowListener{
 	private ClienteDAO dao;
 	private FormCliente ventana;
 	private Cliente cliente;
 	private boolean modificar;
-
+	DecimalFormat formatea = new DecimalFormat("###,###.##");
 	
 	public ClienteController(FormCliente v){
 		this.ventana=v;
@@ -30,19 +33,30 @@ public class ClienteController implements ActionListener,KeyListener{
 		ventana.getBtnSalir().addActionListener(this);
 		ventana.getCli_cedula().addKeyListener(this);
 		ventana.getCli_nombre().addKeyListener(this);
-		ventana.getClie_buscar().addActionListener(this);
-		ventana.getBtnCanselar().addActionListener(this);
+		ventana.getBtnBuscar().addActionListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
+		ventana.getCli_telefono().addKeyListener(this);
+		
+		
 	}
+	
 	@SuppressWarnings("static-access")
 	private void registrarCliente() {
 		if (ventana.getCli_nombre().getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Debes Completar el Nombre");
 			ventana.getCli_nombre().requestFocus();
-		}else if (ventana.getCli_cedula().getText().isEmpty()) {
+		}else if (ventana.getCli_cedula().getText().isEmpty() || ventana.getCli_cedula().getText().equals("")) {
 			JOptionPane.showMessageDialog(null, "Debe Ingresar el Numero de Cedula");
 			ventana.getCli_cedula().requestFocus();
-		} else{
+			
+		} else if (ventana.getCli_direccion().getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Debes Ingresar la Direccion");
+			ventana.getCli_direccion().requestFocus();
+			
+		}else if (ventana.getCli_telefono().getText().isEmpty() ) {
+			JOptionPane.showMessageDialog(null, "Debes Ingresar el Telefono");
+			ventana.getCli_telefono().requestFocus();
+		} else {
 		cliente=new Cliente();
 		cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
 		cliente.setNombre(ventana.getCli_nombre().getText());
@@ -53,14 +67,17 @@ public class ClienteController implements ActionListener,KeyListener{
 		dao=new ClienteDAO();
         if(modificar==false){
         	dao.guardar(cliente);
-        	this.ventana.getBtnGuardar().setEnabled(false);
+        	this.ventana.getBtnGuardar().setVisible(false);
 		}else{
 			cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
 			dao.modificarCliente(cliente);
-			this.ventana.getBtnGuardar().setEnabled(false);
+			JOptionPane.showMessageDialog(null, "El Cliente fue Modificada");
+			this.ventana.getBtnGuardar().setVisible(false);
 		}
         
 		}
+
+	
 	}
 
 	@SuppressWarnings("static-access")
@@ -68,6 +85,7 @@ public class ClienteController implements ActionListener,KeyListener{
 		cliente=new Cliente();
 		cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
 		dao.eliminar(cliente);
+		JOptionPane.showMessageDialog(null, "El Cliente fue Eliminada"+1);
 		
 	}
 	public void listarClientes(){
@@ -77,10 +95,11 @@ public class ClienteController implements ActionListener,KeyListener{
 	    for (int i = 0; i < lista.size(); i++) {
 	    	fila[0]=lista.get(i).getCodigo();
 	    	fila[1]=lista.get(i).getNombre();
-	    	fila[2]=lista.get(i).getCedula();
+	    	fila[2]=formatea.format(lista.get(i).getCedula());
 	    	modelo.addRow(fila);
 	    }
 		}
+	
 	@SuppressWarnings("static-access")
 	public void cargar(int id){
 		dao=new ClienteDAO();
@@ -106,21 +125,22 @@ public class ClienteController implements ActionListener,KeyListener{
 	}
 	
 	private void habilitarGuardar() {
-		this.ventana.getCli_nombre().setEnabled(true);
-		this.ventana.getCli_cedula().setEnabled(true);
-		this.ventana.getCli_ruc().setEnabled(true);
-		this.ventana.getCli_direccion().setEnabled(true);
-		this.ventana.getCli_telefono().setEnabled(true);
+		this.ventana.getCli_nombre().setEditable(true);
+		this.ventana.getCli_cedula().setEditable(true);
+		this.ventana.getCli_ruc().setEditable(true);
+		this.ventana.getCli_direccion().setEditable(true);
+		this.ventana.getCli_telefono().setEditable(true);
 
 	}
 	private void desabilitarGuardar() {
-		this.ventana.getCli_nombre().setEnabled(false);
-		this.ventana.getCli_cedula().setEnabled(false);
-		this.ventana.getCli_ruc().setEnabled(false);
-		this.ventana.getCli_direccion().setEnabled(false);
-		this.ventana.getCli_telefono().setEnabled(false);
+		this.ventana.getCli_nombre().setEditable(false);
+		this.ventana.getCli_cedula().setEditable(false);
+		this.ventana.getCli_ruc().setEditable(false);
+		this.ventana.getCli_direccion().setEditable(false);
+		this.ventana.getCli_telefono().setEditable(false);
 
 	}
+	
 	private void limpiarCampo() {
 		ventana.getCli_codigo().setText("");
 		ventana.getCli_nombre().setText("");
@@ -139,52 +159,85 @@ public class ClienteController implements ActionListener,KeyListener{
 		}
 		
 	}
+	
 	private void salir() {
 		this.ventana.dispose();
 		
 	}
-	@Override
+	public void ocultarGuardar() {
+		ventana.getBtnGuardar().setVisible(false);
+		ventana.getBtnModificar().setVisible(false);
+		ventana.getBtnEliminar().setVisible(false);
+
+	}
+	
+	
+	private void listarNombre(){
+		ArrayList<Cliente> cliente=new ArrayList<Cliente>();
+		String nombre=ventana.getClie_buscar().getText();
+		cliente=ClienteDAO.listasCliente(nombre);
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableCliente().getModel();
+			Object[] fila=new Object[modelo.getColumnCount()];
+			for (int i = 0; i <cliente.size(); i++) {					
+				fila[0]=cliente.get(i).getCodigo();
+				fila[1]=cliente.get(i).getNombre();
+				fila[2]=cliente.get(i).getCedula();
+				modelo.addRow(fila);
+			}
+		
+}
+	/** Empieza el
+	 * 
+	 *  actionPerformed
+	 *  **/
+	
 	public void actionPerformed(ActionEvent e) {
+		
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
 			registrarCliente();
+			limpiarCampo();
 			limpiarTabla();
 			listarClientes();
-			limpiarCampo();
-			desabilitarGuardar();
-			
+			modificar=false;
+		
 		}
+		
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
-			habilitarGuardar();
 			limpiarCampo();
+			habilitarGuardar();
+			ventana.getBtnGuardar().setVisible(true);
+			ventana.getBtnModificar().setVisible(false);
+			this.ventana.getBtnEliminar().setVisible(false);
 			ventana.getBtnGuardar().setEnabled(true);
-			ventana.getBtnModificar().setEnabled(false);
-			this.ventana.getBtnEliminar().setEnabled(false);
 			obtenerUltimoId();
 		}
 		if (e.getSource().equals(ventana.getBtnModificar())) {
+			modificar=true;
 			limpiarTabla();
 			listarClientes();
 			habilitarGuardar();
-			this.ventana.getBtnGuardar().setEnabled(true);
-			this.ventana.getBtnEliminar().setEnabled(false);
-			this.ventana.getBtnModificar().setEnabled(false);
-			modificar=true;
+			ventana.getBtnGuardar().setVisible(true);
+			ventana.getBtnModificar().setVisible(false);
+			ventana.getBtnEliminar().setVisible(false);
 		}
 		if (e.getSource().equals(ventana.getBtnSalir())) {
-			salir();
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Salir?","Salir",2,
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				salir();
+				
+			}
 			
 		}
-		if (e.getSource().equals(ventana.getClie_buscar())) {
+		if (e.getSource().equals(ventana.getBtnBuscar())) {
 				limpiarTabla();
 				listarNombre();
 					
 		}
-		if (e.getSource().equals(ventana.getBtnCanselar())) {
-			limpiarCampo();
-		}
+		
 		if (e.getSource().equals(ventana.getBtnEliminar())) {
 			if (JOptionPane.showConfirmDialog(new JDialog(),
-					"¿Seguro que Quieres Eliminar","Salir",
+					"¿Seguro que Quieres Eliminar","Salir",2,
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
 				eliminar();
 				limpiarTabla();
@@ -194,34 +247,25 @@ public class ClienteController implements ActionListener,KeyListener{
 
 		}
 		
+		
 	}
-	private void listarNombre(){
-			ArrayList<Cliente> cliente=new ArrayList<Cliente>();
-			String nombre=ventana.getClie_buscar().getText();
-			cliente=ClienteDAO.listasCliente(nombre);
-			DefaultTableModel modelo=(DefaultTableModel) ventana.getTableCliente().getModel();
-				Object[] fila=new Object[modelo.getColumnCount()];
-				for (int i = 0; i <cliente.size(); i++) {					
-					fila[0]=cliente.get(i).getCodigo();
-					fila[1]=cliente.get(i).getNombre();
-					fila[2]=cliente.get(i).getCedula();
-					modelo.addRow(fila);
-				}
-	}
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getSource().equals(ventana.getTableCliente())){
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
 				seleccionarFila();
-				this.ventana.getBtnGuardar().setEnabled(false);
-				this.ventana.getBtnModificar().setEnabled(true);
-				this.ventana.getBtnEliminar().setEnabled(true);
+				ventana.getBtnGuardar().setVisible(false);
+				ventana.getBtnModificar().setVisible(true);
+				ventana.getBtnEliminar().setVisible(true);
 				desabilitarGuardar();
+		
 			
 			}
 			
 		
 		}
+		
 		
 	}
 	@Override
@@ -233,15 +277,56 @@ public class ClienteController implements ActionListener,KeyListener{
 	public void keyTyped(KeyEvent e) {
 		if (e.getSource().equals(ventana.getCli_cedula())) {
 			char car=e.getKeyChar();
-			if(  ventana.getCli_cedula().getText().length()>=8)e.consume();
+			if(  ventana.getCli_cedula().getText().length()>=7)e.consume();
+			if((car<'0' || car>'9') ) e.consume();
+		}
+		if (e.getSource().equals(ventana.getCli_telefono())) {
+			char car=e.getKeyChar();
+			if(  ventana.getCli_telefono().getText().length()>=10)e.consume();
 			if((car<'0' || car>'9') ) e.consume();
 		}
 		if (e.getSource().equals(ventana.getCli_nombre())) {
 			char car=e.getKeyChar();
 		       if((car<'a' || car>'z') && (car<'A' || car>'Z')&&(car<' '||car>' ')) e.consume();
 		}
+	
 		}
 		
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		
+	}
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	}
 	
 	

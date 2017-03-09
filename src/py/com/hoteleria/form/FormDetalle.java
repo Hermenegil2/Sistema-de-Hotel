@@ -1,31 +1,27 @@
 package py.com.hoteleria.form;
-/**
- * @author Hermenegildo
- */
+
 import java.awt.EventQueue;
 
 import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-
-import java.awt.Color;
-
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
-import java.awt.Font;
+import py.com.hoteleria.controller.DetalleController;
+import py.com.hoteleria.lista.ListaServicio;
+
+import java.awt.SystemColor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class FormDetalle extends JDialog {
-	private JTable table;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField Dtcodigo;
+	private JTextField DtNroEstadia;
+	public static JTextField DtCodServicio;
+	public static JTextField DtMonto;
+	private JButton btnGuardar;
+	private JButton button;
 
 	/**
 	 * Launch the application.
@@ -48,160 +44,105 @@ public class FormDetalle extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormDetalle() {
-		setBounds(100, 100,800, 500);
+		getContentPane().setBackground(SystemColor.activeCaption);
+		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 298, 377);
-		getContentPane().add(scrollPane);
-		
-		table = new JTable();
-		table.setBackground(Color.WHITE);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-				{},
-			},
-			new String[] {
-			}
-		));
-		scrollPane.setViewportView(table);
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.CYAN);
-		panel.setBounds(459, 11, 315, 370);
-		getContentPane().add(panel);
-		panel.setLayout(null);
-		
 		JLabel lblCodigo = new JLabel("Codigo:");
-		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblCodigo.setBounds(10, 26, 67, 28);
-		panel.add(lblCodigo);
+		lblCodigo.setBounds(6, 6, 55, 16);
+		getContentPane().add(lblCodigo);
 		
-		textField_1 = new JTextField();
-		textField_1.setEnabled(false);
-		textField_1.setBounds(142, 27, 86, 30);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		JLabel lblNroEstadia = new JLabel("Nro. Estadia:");
+		lblNroEstadia.setBounds(6, 34, 81, 16);
+		getContentPane().add(lblNroEstadia);
 		
-		JLabel lblNombre = new JLabel("Nro. Estadia:");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNombre.setBounds(10, 90, 144, 14);
-		panel.add(lblNombre);
+		JLabel lblCodigoServicio = new JLabel("Codigo Servicio:");
+		lblCodigoServicio.setBounds(6, 68, 95, 16);
+		getContentPane().add(lblCodigoServicio);
 		
-		textField_2 = new JTextField();
-		textField_2.setEnabled(false);
-		textField_2.setBounds(142, 84, 163, 30);
-		panel.add(textField_2);
-		textField_2.setColumns(10);
+		JLabel lblMonto = new JLabel("Monto:");
+		lblMonto.setBounds(6, 106, 55, 16);
+		getContentPane().add(lblMonto);
 		
-		JLabel lblNewLabel = new JLabel("Codigo de Servicio:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel.setBounds(10, 147, 132, 24);
-		panel.add(lblNewLabel);
+		Dtcodigo = new JTextField();
+		Dtcodigo.setBounds(103, 0, 166, 28);
+		getContentPane().add(Dtcodigo);
+		Dtcodigo.setColumns(10);
 		
-		textField_3 = new JTextField();
-		textField_3.setEnabled(false);
-		textField_3.setBounds(142, 141, 163, 30);
-		panel.add(textField_3);
-		textField_3.setColumns(10);
+		DtNroEstadia = new JTextField();
+		DtNroEstadia.setColumns(10);
+		DtNroEstadia.setBounds(103, 28, 166, 28);
+		getContentPane().add(DtNroEstadia);
 		
-		JLabel lblRuc = new JLabel("Monto:");
-		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblRuc.setBounds(10, 204, 67, 14);
-		panel.add(lblRuc);
+		DtCodServicio = new JTextField();
+		DtCodServicio.setColumns(10);
+		DtCodServicio.setBounds(103, 62, 144, 28);
+		getContentPane().add(DtCodServicio);
 		
-		textField_4 = new JTextField();
-		textField_4.setEnabled(false);
-		textField_4.setBounds(142, 198, 163, 30);
-		panel.add(textField_4);
-		textField_4.setColumns(10);
+		DtMonto = new JTextField();
+		DtMonto.setColumns(10);
+		DtMonto.setBounds(103, 100, 166, 28);
+		getContentPane().add(DtMonto);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.CYAN);
-		panel_1.setBounds(459, 396, 315, 52);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.setBounds(103, 153, 90, 28);
+		getContentPane().add(btnGuardar);
 		
-		JButton btnNewButton = new JButton("Guardar");
-		btnNewButton.setBounds(24, 11, 99, 29);
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnNewButton);
+		button = new JButton("Guardar");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ListaServicio l=new ListaServicio();
+				l.setLocationRelativeTo(null);
+				l.setVisible(true);
+			}
+		});
+		button.setBounds(247, 62, 23, 28);
+		getContentPane().add(button);
 		
-		JButton btnNewButton_1 = new JButton("Canselar");
-		btnNewButton_1.setBounds(128, 11, 103, 29);
-		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnNewButton_1);
-		
-		JButton btnSalir = new JButton("Salir");
-		btnSalir.setBounds(236, 11, 69, 29);
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnSalir);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(Color.CYAN);
-		panel_2.setBounds(318, 11, 130, 223);
-		getContentPane().add(panel_2);
-		panel_2.setLayout(null);
-		
-		JButton btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(23, 34, 83, 29);
-		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnNuevo);
-		
-		JButton btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(11, 97, 107, 29);
-		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnModificar);
-		
-		JButton btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(15, 160, 99, 29);
-		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnEliminar);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(Color.CYAN);
-		panel_3.setBounds(5, 399, 303, 49);
-		getContentPane().add(panel_3);
-		panel_3.setLayout(null);
-		
-		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(10, 11, 87, 29);
-		panel_3.add(btnBuscar);
-		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		textField = new JTextField();
-		textField.setBounds(96, 11, 197, 29);
-		panel_3.add(textField);
-		textField.setColumns(10);
+		@SuppressWarnings("unused")
+		DetalleController controlador=new DetalleController(this);
+
 
 	}
+
+	public JTextField getDtcodigo() {
+		return Dtcodigo;
+	}
+
+	public void setDtcodigo(JTextField dtcodigo) {
+		Dtcodigo = dtcodigo;
+	}
+
+	public JTextField getDtNroEstadia() {
+		return DtNroEstadia;
+	}
+
+	public void setDtNroEstadia(JTextField dtNroEstadia) {
+		DtNroEstadia = dtNroEstadia;
+	}
+
+	public JTextField getDtCodServicio() {
+		return DtCodServicio;
+	}
+
+	public void setDtCodServicio(JTextField dtCodServicio) {
+		DtCodServicio = dtCodServicio;
+	}
+
+	public JTextField getDtMonto() {
+		return DtMonto;
+	}
+
+	public void setDtMonto(JTextField dtMonto) {
+		DtMonto = dtMonto;
+	}
+
+	public JButton getBtnGuardar() {
+		return btnGuardar;
+	}
+
+	public void setBtnGuardar(JButton btnGuardar) {
+		this.btnGuardar = btnGuardar;
+	}
+
 }

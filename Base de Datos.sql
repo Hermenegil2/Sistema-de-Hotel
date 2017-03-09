@@ -9,13 +9,14 @@ cli_telefo INTEGER
 
 
 CREATE TABLE config(
+id SERIAL PRIMARY KEY,
 Cfg_org CHARACTER VARYING(100) NOT NULL,
 Cfg_telefo CHARACTER VARYING(60)
 );
 
 CREATE TABLE detalle(
 det_numero SERIAL PRIMARY KEY,
-det_nroest INTEGER NOT NULL,
+det_nroest INTEGER REFERENCES estadia(est_numero) NOT NULL,
 det_codser INTEGER REFERENCES servicio(ser_codigo)  NOT NULL,
 det_monto INTEGER
 );
@@ -23,7 +24,7 @@ det_monto INTEGER
 CREATE TABLE deuda(
 deu_numero SERIAL PRIMARY KEY,
 deu_nroest INTEGER REFERENCES estadia(est_numero) NOT NULL,
-deu_codcli INTEGER REFERENCES cliente(cli_numero) NOT NULL,
+deu_codcli INTEGER REFERENCES cliente(cli_codigo) NOT NULL,
 deu_monto INTEGER NOT NULL,
 deu_pagado INTEGER NOT NULL
 );
@@ -37,7 +38,7 @@ hab_obse CHARACTER VARYING(500)
 
 CREATE TABLE cobranza(
 cob_codigo SERIAL PRIMARY KEY,
-cob_fecha DATETIME,
+cob_fecha DATE,
 cob_nrodeuda INTEGER REFERENCES deuda(deu_numero) NOT NULL,
 cob_codcli INTEGER REFERENCES cliente(cli_codigo) NOT NULL,
 cob_pagado INTEGER
@@ -45,10 +46,10 @@ cob_pagado INTEGER
 
 CREATE TABLE estadia(
 est_numero SERIAL PRIMARY KEY,
-est_fecha DATETIME,
+est_fecha timestamp without time zone,
 est_codcli INTEGER REFERENCES cliente(cli_codigo) NOT NULL,
 est_codhab INTEGER REFERENCES habita(hab_codigo) NOT NULL,
-est_fecsal DATETIME,
+est_fecsal timestamp without time zone,
 est_monto INTEGER,
 est_desc INTEGER,
 est_obse CHARACTER VARYING(500) ,

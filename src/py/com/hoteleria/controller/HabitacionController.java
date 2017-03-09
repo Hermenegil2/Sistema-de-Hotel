@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -14,23 +17,24 @@ import py.com.hoteleria.dao.HabitacionDAO;
 import py.com.hoteleria.model.Habitacion;
 
 
-public class HabitacionController implements ActionListener,KeyListener{
+public class HabitacionController implements ActionListener,KeyListener,MouseListener{
 	private HabitacionDAO dao;
 	private FormHabitacion ventana;
 	private Habitacion habita;
 	private boolean modificar;
-
+	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
+    
 	
 	public HabitacionController(FormHabitacion v){
 		this.ventana=v;
 		ventana.getBtnNuevo().addActionListener(this);
 		ventana.getBtnGuardar().addActionListener(this);
 		ventana.getBtnModificar().addActionListener(this);
-		ventana.getTable_habitacion().addKeyListener(this);
+		ventana.getTableHabitacion().addKeyListener(this);
 		ventana.getBtnSalir().addActionListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
-		ventana.getBtnCancelar().addActionListener(this);
-		ventana.getHabi_buscar().addActionListener(this);
+		ventana.getBtnBuscar().addActionListener(this);
+		ventana.getHab_monto().addKeyListener(this);
 	}
 	private void obtenerUltimoId() {
 		habita=HabitacionDAO.obtenerUltimoId();
@@ -38,15 +42,15 @@ public class HabitacionController implements ActionListener,KeyListener{
 
 	}
 	private void habilitarCampo() {
-		this.ventana.getHab_descripcion().setEnabled(true);
-		this.ventana.getHab_monto().setEnabled(true);
-		this.ventana.getHab_observacion().setEnabled(true);
+		this.ventana.getHab_descripcion().setEditable(true);
+		this.ventana.getHab_monto().setEditable(true);
+		this.ventana.getHab_observacion().setEditable(true);
 
 	}
 	private void desabilitarCampo() {
-		this.ventana.getHab_descripcion().setEnabled(false);
-		this.ventana.getHab_monto().setEnabled(false);
-		this.ventana.getHab_observacion().setEnabled(false);
+		this.ventana.getHab_descripcion().setEditable(false);
+		this.ventana.getHab_monto().setEditable(false);
+		this.ventana.getHab_observacion().setEditable(false);
 
 	}
 	private void limpiarCampo() {
@@ -72,11 +76,10 @@ public class HabitacionController implements ActionListener,KeyListener{
 		dao=new HabitacionDAO();
         if(modificar==false){
         	dao.guardar(habita);
-        	this.ventana.getBtnGuardar().setEnabled(false);
+        	
 		}else{
 			habita.setCodigo(Integer.parseInt(ventana.getHab_codigo().getText()));
 			dao.modificarHabitacion(habita);
-			this.ventana.getBtnGuardar().setEnabled(false);
 		}
 		}
 	}
@@ -88,17 +91,7 @@ public class HabitacionController implements ActionListener,KeyListener{
 		dao.eliminar(habita);
 		
 	}
-	public  void listarHabitacion(){
-		DefaultTableModel modelo=(DefaultTableModel) ventana.getTable_habitacion().getModel();
-		ArrayList<Habitacion>lista=HabitacionDAO.listarHabitacion();
-		Object[] fila=new Object[modelo.getColumnCount()];
-	    for (int i = 0; i < lista.size(); i++) {
-	    	fila[0]=lista.get(i).getCodigo();
-	    	fila[1]=lista.get(i).getDescripcionHabitacion();
-	    	fila[2]=lista.get(i).getMontoDia();
-	    	modelo.addRow(fila);
-	    }
-		}
+	
 	@SuppressWarnings("static-access")
 	public void cargar(int id){
 		dao=new HabitacionDAO();
@@ -109,16 +102,16 @@ public class HabitacionController implements ActionListener,KeyListener{
 		ventana.getHab_observacion().setText(habita.getObservacion());
 		}
 	private void seleccionarFila() {
-		int row =ventana.getTable_habitacion().getSelectedRow();
-		Integer id=Integer.parseInt(ventana.getTable_habitacion().getValueAt(row, 0).toString().trim());
+		int row =ventana.getTableHabitacion().getSelectedRow();
+		Integer id=Integer.parseInt(ventana.getTableHabitacion().getValueAt(row, 0).toString().trim());
 		cargar(id);
 
 	}
 	
 	
 	public void limpiarTabla() {
-		DefaultTableModel modelo=(DefaultTableModel) ventana.getTable_habitacion().getModel();
-		for (int i = 0; i < ventana.getTable_habitacion().getRowCount(); i++) {
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableHabitacion().getModel();
+		for (int i = 0; i < ventana.getTableHabitacion().getRowCount(); i++) {
 			modelo.removeRow(i);
 			i-=1;
 		}
@@ -130,9 +123,9 @@ public class HabitacionController implements ActionListener,KeyListener{
 	}
 	private void listarDescrip(){
 		ArrayList<Habitacion>habitacion=new ArrayList<Habitacion>();
-        String descripcion=ventana.getHabi_buscar().getText();
+        String descripcion=ventana.getHab_buscar().getText();
 		habitacion=HabitacionDAO.listarHabitacionDes(descripcion);
-		DefaultTableModel modelo=(DefaultTableModel) ventana.getTable_habitacion().getModel();
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableHabitacion().getModel();
 		Object[] fila=new Object[modelo.getColumnCount()];
 		for (int i = 0; i <habitacion.size(); i++) {					
 			fila[0]=habitacion.get(i).getCodigo();
@@ -141,9 +134,30 @@ public class HabitacionController implements ActionListener,KeyListener{
 			modelo.addRow(fila);
 		}
 	}
+	public void listarHabitacion(){
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableHabitacion().getModel();
+		ArrayList<Habitacion>lista=HabitacionDAO.listarHabitacion();
+		Object[] fila=new Object[modelo.getColumnCount()];
+	    for (int i = 0; i < lista.size(); i++) {
+	    	fila[0]=lista.get(i).getCodigo();
+	    	fila[1]=lista.get(i).getDescripcionHabitacion();
+	    	fila[2]=formatea.format(lista.get(i).getMontoDia());
+	    	modelo.addRow(fila);
+	    }
+		}
+	
+	
+	
+	public void ocultarBoton() {
+		ventana.getBtnGuardar().setVisible(false);
+		ventana.getBtnModificar().setVisible(false);
+		ventana.getBtnEliminar().setVisible(false);
+
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(ventana.getHabi_buscar())) {
+		if (e.getSource().equals(ventana.getBtnBuscar())) {
 			limpiarTabla();
 			listarDescrip();
 		}
@@ -153,26 +167,34 @@ public class HabitacionController implements ActionListener,KeyListener{
 			limpiarTabla();
 			listarHabitacion();
 			limpiarCampo();
+			modificar=false;
+			ventana.getBtnGuardar().setVisible(false);
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			habilitarCampo();
-			ventana.getBtnGuardar().setEnabled(true);
-			ventana.getBtnModificar().setEnabled(false);
-			this.ventana.getBtnEliminar().setEnabled(false);
 			limpiarCampo();
 			obtenerUltimoId();
+			ventana.getBtnGuardar().setVisible(true);
+			ventana.getBtnModificar().setVisible(false);
+			ventana.getBtnEliminar().setVisible(false);
 		}
 		if (e.getSource().equals(ventana.getBtnModificar())) {
 			limpiarTabla();
 			listarHabitacion();
-			this.ventana.getBtnGuardar().setEnabled(true);
-			this.ventana.getBtnEliminar().setEnabled(false);
-			this.ventana.getBtnModificar().setEnabled(false);
 			modificar=true;
 			habilitarCampo();
+			ventana.getBtnGuardar().setVisible(true);
+			ventana.getBtnEliminar().setVisible(false);
 		}
 		if (e.getSource().equals(ventana.getBtnSalir())) {
-			salir();
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Salir","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				salir();
+				
+				
+				
+			}
 			
 		}
 	
@@ -182,17 +204,13 @@ public class HabitacionController implements ActionListener,KeyListener{
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
 				eliminar();
 				limpiarTabla();
-				listarHabitacion();
-				ventana.getBtnEliminar().setEnabled(false);
-				ventana.getBtnModificar().setEnabled(true);
-				
-				
-			}
-			if (e.getSource().equals(ventana.getBtnCancelar())) {
-				desabilitarCampo();
 				limpiarCampo();
-		
+				listarHabitacion();
+				
+				
+				
 			}
+			
 			
 
 		}
@@ -200,13 +218,13 @@ public class HabitacionController implements ActionListener,KeyListener{
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getSource().equals(ventana.getTable_habitacion())){
+		if(e.getSource().equals(ventana.getTableHabitacion())){
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
 				seleccionarFila();
-				this.ventana.getBtnGuardar().setEnabled(false);
-				this.ventana.getBtnModificar().setEnabled(true);
-				this.ventana.getBtnEliminar().setEnabled(true);
 			    desabilitarCampo();
+			    ventana.getBtnGuardar().setVisible(false);
+			    ventana.getBtnModificar().setVisible(true);
+			    ventana.getBtnEliminar().setVisible(true);
 			
 			}
 			
@@ -221,6 +239,35 @@ public class HabitacionController implements ActionListener,KeyListener{
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
+		if (e.getSource().equals(ventana.getHab_monto())) {
+			char car=e.getKeyChar();
+			if(  ventana.getHab_monto().getText().length()>=9)e.consume();
+			if((car<'0' || car>'9') ) e.consume();
+		}
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

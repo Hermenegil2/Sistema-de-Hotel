@@ -4,10 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 import py.com.hoteleria.abm.FormServicio;
 import py.com.hoteleria.dao.ServicioDAO;
 import py.com.hoteleria.model.Servicio;
@@ -17,6 +20,7 @@ public class ServicioController implements ActionListener,KeyListener{
 	private FormServicio ventana;
 	private Servicio servicio;
 	private boolean modificar;
+	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
 
 	
 	public ServicioController(FormServicio v){
@@ -27,19 +31,20 @@ public class ServicioController implements ActionListener,KeyListener{
 		ventana.getTableServicio().addKeyListener(this);
 		ventana.getBtnSalir().addActionListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
-		ventana.getBtnCancelar().addActionListener(this);
 		ventana.getSer_buscar().addActionListener(this);
+		ventana.getBtnBuscar().addActionListener(this);
+		ventana.getSer_monto().addKeyListener(this);
 	}
 	private void habilitarCampo() {
-		this.ventana.getSer_descri().setEnabled(true);
-		this.ventana.getSer_monto().setEnabled(true);
-		this.ventana.getSer_observacion().setEnabled(true);
+		this.ventana.getSer_descri().setEditable(true);
+		this.ventana.getSer_monto().setEditable(true);
+		this.ventana.getSer_observacion().setEditable(true);
 
 	}
 	private void desabilitarCampo() {
-		this.ventana.getSer_descri().setEnabled(false);
-		this.ventana.getSer_monto().setEnabled(false);
-		this.ventana.getSer_observacion().setEnabled(false);
+		this.ventana.getSer_descri().setEditable(false);
+		this.ventana.getSer_monto().setEditable(false);
+		this.ventana.getSer_observacion().setEditable(false);
 
 	}
 	private void limpiarCampo() {
@@ -70,11 +75,9 @@ public class ServicioController implements ActionListener,KeyListener{
 		dao=new ServicioDAO();
         if(modificar==false){
         	dao.guardar(servicio);
-        	this.ventana.getBtnGuardar().setEnabled(false);
 		}else{
 			servicio.setCodigo(Integer.parseInt(ventana.getSer_codigo().getText()));
 			dao.modificarServicio(servicio);
-			this.ventana.getBtnGuardar().setEnabled(false);
 		}
 		}
 	}
@@ -93,7 +96,7 @@ public class ServicioController implements ActionListener,KeyListener{
 	    for (int i = 0; i < lista.size(); i++) {
 	    	fila[0]=lista.get(i).getCodigo();
 	    	fila[1]=lista.get(i).getDescripcionServicio();
-	    	fila[2]=lista.get(i).getMonto();
+	    	fila[2]=formatea.format(lista.get(i).getMonto());
 	    	modelo.addRow(fila);
 	    }
 		}
@@ -126,6 +129,12 @@ public class ServicioController implements ActionListener,KeyListener{
 		this.ventana.dispose();
 		
 	}
+	public void ocultarBoton() {
+		ventana.getBtnGuardar().setVisible(false);
+		ventana.getBtnModificar().setVisible(false);
+		ventana.getBtnEliminar().setVisible(false);
+
+	}
 	private void listarDescripcion(){
 		ArrayList<Servicio> servicio=new ArrayList<Servicio>();
 		String descripcion=ventana.getSer_buscar().getText();
@@ -135,13 +144,13 @@ public class ServicioController implements ActionListener,KeyListener{
 		for (int i = 0; i <servicio.size(); i++) {					
 			fila[0]=servicio.get(i).getCodigo();
 			fila[1]=servicio.get(i).getDescripcionServicio();
-			fila[2]=servicio.get(i).getMonto();
+			fila[2]=formatea.format(servicio.get(i).getMonto());
 			modelo.addRow(fila);
 		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(ventana.getSer_buscar())) {
+		if (e.getSource().equals(ventana.getBtnBuscar())) {
 			limpiarTabla();
 			listarDescripcion();
 			
@@ -151,27 +160,35 @@ public class ServicioController implements ActionListener,KeyListener{
 			limpiarTabla();
 			listarServicios();
 			limpiarCampo();
+			modificar=false;
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			habilitarCampo();
-			ventana.getBtnGuardar().setEnabled(true);
-			ventana.getBtnModificar().setEnabled(false);
-			this.ventana.getBtnEliminar().setEnabled(false);
+			ventana.getBtnGuardar().setVisible(true);
+			ventana.getBtnModificar().setVisible(false);
+			this.ventana.getBtnEliminar().setVisible(false);
 			limpiarCampo();
 			obtenerUltimoId();
 		}
 		if (e.getSource().equals(ventana.getBtnModificar())) {
 			limpiarTabla();
 			listarServicios();
-			this.ventana.getBtnGuardar().setEnabled(true);
-			this.ventana.getBtnEliminar().setEnabled(false);
-			this.ventana.getBtnModificar().setEnabled(false);
+			this.ventana.getBtnGuardar().setVisible(true);
+			this.ventana.getBtnEliminar().setVisible(false);
+			this.ventana.getBtnModificar().setVisible(false);
 			modificar=true;
 			habilitarCampo();
+			
 		}
 		if (e.getSource().equals(ventana.getBtnSalir())) {
-			salir();
-			
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Salir","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				salir();
+				
+				
+				
+			}
 		}
 	
 		if (e.getSource().equals(ventana.getBtnEliminar())) {
@@ -181,17 +198,13 @@ public class ServicioController implements ActionListener,KeyListener{
 				eliminar();
 				limpiarTabla();
 				listarServicios();
-				ventana.getBtnEliminar().setEnabled(false);
-				ventana.getBtnModificar().setEnabled(true);
+				ventana.getBtnEliminar().setVisible(false);
+				ventana.getBtnModificar().setVisible(true);
 				
 				
 			}
 			
 		}
-			if (e.getSource().equals(ventana.getBtnCancelar())) {
-				desabilitarCampo();
-				limpiarCampo();
-			}
 
 		}
 		
@@ -201,9 +214,9 @@ public class ServicioController implements ActionListener,KeyListener{
 		if(e.getSource().equals(ventana.getTableServicio())){
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
 				seleccionarFila();
-				this.ventana.getBtnGuardar().setEnabled(false);
-				this.ventana.getBtnModificar().setEnabled(true);
-				this.ventana.getBtnEliminar().setEnabled(true);
+				this.ventana.getBtnGuardar().setVisible(false);
+				this.ventana.getBtnModificar().setVisible(true);
+				this.ventana.getBtnEliminar().setVisible(true);
 			    desabilitarCampo();
 			
 			}
@@ -219,5 +232,10 @@ public class ServicioController implements ActionListener,KeyListener{
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
+		if (e.getSource().equals(ventana.getSer_monto())) {
+			char car=e.getKeyChar();
+			if(  ventana.getSer_monto().getText().length()>=9)e.consume();
+			if((car<'0' || car>'9') ) e.consume();
+		}
 	}
 }

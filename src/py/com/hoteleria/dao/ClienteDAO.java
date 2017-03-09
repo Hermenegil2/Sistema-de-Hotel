@@ -46,7 +46,7 @@ public class ClienteDAO {
 	public static ArrayList<Cliente> listarCliente(){
 		 ArrayList<Cliente> lista=new ArrayList<>();
 		 Cliente cliente=null;
-	  	   String sql="SELECT cli_codigo, cli_nombre, cli_cedula FROM cliente ORDER BY cli_codigo ASC;";
+	  	   String sql="SELECT * FROM cliente ORDER BY cli_codigo DESC;";
 	  	   
 	  	  Conexion.abrirConexion();
 	  	  try {
@@ -56,6 +56,9 @@ public class ClienteDAO {
 					cliente.setCodigo(rs.getInt("cli_codigo"));
 					cliente.setNombre(rs.getString("cli_nombre"));
 					cliente.setCedula(rs.getInt("cli_cedula"));
+					cliente.setRuc(rs.getString("cli_ruc"));
+					cliente.setDireccion(rs.getString("cli_direcc"));
+					cliente.setTelefono(rs.getInt("cli_telefo"));
 					lista.add(cliente);
 				}
 				

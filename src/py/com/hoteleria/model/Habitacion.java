@@ -5,6 +5,8 @@ public class Habitacion {
 	private String descripcionHabitacion;
 	private double montoDia;
 	private String observacion;
+	private Estadia estadia;
+	private boolean estado;
 	
 	public Habitacion() {
 		super();
@@ -12,6 +14,23 @@ public class Habitacion {
 		descripcionHabitacion="";
 		montoDia=0.0;
 		observacion="";
+		estado=false;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+
+	public Estadia getEstadia() {
+		return estadia;
+	}
+
+	public void setEstadia(Estadia estadia) {
+		this.estadia = estadia;
 	}
 
 	public int getCodigo() {

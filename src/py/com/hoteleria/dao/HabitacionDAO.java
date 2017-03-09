@@ -19,33 +19,11 @@ public class HabitacionDAO {
 		}
 		Conexion.cerrarConexion();
 }
-	public static void modificarHabitacion(Habitacion habita){
- 	   String sql="UPDATE habita SET hab_descri='"+habita.getDescripcionHabitacion()+"', hab_mondia="+habita.getMontoDia()+", hab_obse='"+habita.getObservacion()+"' WHERE hab_codigo="+habita.getCodigo()+" ;";
- 	   Conexion.abrirConexion();
- 	   try {
-			Conexion.sentencia.executeUpdate(sql);
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
-			e.printStackTrace();
-		}
- 	   Conexion.cerrarConexion();
- }
-	public static void eliminar(Habitacion habita){
-		String sql="DELETE FROM habita WHERE hab_codigo="+habita.getCodigo()+"";
-	    System.out.println(sql);
-	    Conexion.abrirConexion();
-	    try {
-			Conexion.sentencia.executeUpdate(sql);
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
-			e.printStackTrace();
-		}
-	    Conexion.cerrarConexion();
-	}
 	public static ArrayList<Habitacion> listarHabitacion(){
 		 ArrayList<Habitacion> lista=new ArrayList<>();
 		 Habitacion habita=null;
-	  	   String sql="SELECT hab_codigo, hab_descri, hab_mondia FROM habita;";
+	  	   String sql="SELECT * FROM habita WHERE hab_estado=false ";
+	  	   
 	  	  Conexion.abrirConexion();
 	  	  try {
 				ResultSet rs=Conexion.sentencia.executeQuery(sql);
@@ -54,6 +32,7 @@ public class HabitacionDAO {
 					habita.setCodigo(rs.getInt("hab_codigo"));
 					habita.setDescripcionHabitacion(rs.getString("hab_descri"));
 					habita.setMontoDia(rs.getDouble("hab_mondia"));
+					habita.setObservacion(rs.getString("hab_obse"));
 					lista.add(habita);
 				}
 				
@@ -67,6 +46,52 @@ public class HabitacionDAO {
 	  	  
 	  	  
 	     }
+	public static void modificarHabitacion(Habitacion habita){
+ 	   String sql="UPDATE habita SET hab_descri='"+habita.getDescripcionHabitacion()+"', hab_mondia="+habita.getMontoDia()+", hab_obse='"+habita.getObservacion()+"' WHERE hab_codigo="+habita.getCodigo()+" ;";
+ 	   Conexion.abrirConexion();
+ 	   try {
+			Conexion.sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+			e.printStackTrace();
+		}
+ 	   Conexion.cerrarConexion();
+ }
+	public static void actualizarHabitacion(Habitacion habita){
+	 	   String sql="UPDATE habita SET hab_estado="+true+" WHERE hab_codigo="+habita.getCodigo()+" ;";
+	 	   Conexion.abrirConexion();
+	 	   try {
+				Conexion.sentencia.executeUpdate(sql);
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+				e.printStackTrace();
+			}
+	 	   Conexion.cerrarConexion();
+	 }
+	public static void actualizarHabitacionFalse(Habitacion habita){
+	 	   String sql="UPDATE habita SET hab_estado="+false+" WHERE hab_codigo="+habita.getCodigo()+" ;";
+	 	   Conexion.abrirConexion();
+	 	   try {
+				Conexion.sentencia.executeUpdate(sql);
+			} catch (SQLException e) {
+				JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+				e.printStackTrace();
+			}
+	 	   Conexion.cerrarConexion();
+	 }
+	public static void eliminar(Habitacion habita){
+		String sql="DELETE FROM habita WHERE hab_codigo="+habita.getCodigo()+"";
+	    System.out.println(sql);
+	    Conexion.abrirConexion();
+	    try {
+			Conexion.sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+			e.printStackTrace();
+		}
+	    Conexion.cerrarConexion();
+	}
+	
 	public static Habitacion habitacionId(int codigo){
 	  	   String sql="SELECT hab_codigo, hab_descri, hab_mondia, hab_obse FROM habita WHERE hab_codigo="+codigo+";";
 	  	   Conexion.abrirConexion();

@@ -1,7 +1,5 @@
 package py.com.hoteleria.form;
-/**
- * @author Hermenegildo
- */
+
 import java.awt.EventQueue;
 
 import javax.swing.JDialog;
@@ -11,24 +9,35 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
-
-import java.awt.Color;
-
 import javax.swing.JLabel;
 
 import java.awt.Font;
 
-import net.miginfocom.swing.MigLayout;
+import javax.swing.UIManager;
+
+import py.com.hoteleria.controller.CobranzaController;
+
+import java.awt.SystemColor;
+
+import com.toedter.calendar.JDateChooser;
 
 @SuppressWarnings("serial")
 public class FormCobranza extends JDialog {
-	private JTable table;
+	private JTextField Ccodigo;
+	private JTextField CnroDeuda;
+	private JTextField CcodCliente;
+	private JTextField CmontoPagado;
 	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private JTable CtablaCobranza;
+	private JButton btnBuscarDuedas;
+	private JButton btnBuscarClientes;
+	private JButton btnNuevo;
+	private JButton btnGuardar;
+	private JButton btnModificar;
+	private JButton btnEliminar;
+	private JButton btnSalir;
+	private JDateChooser Cfecha;
+	private JPanel panel_1;
 
 	/**
 	 * Launch the application.
@@ -56,156 +65,244 @@ public class FormCobranza extends JDialog {
 		setBounds(100, 100,800, 500);
 		getContentPane().setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 298, 318);
-		getContentPane().add(scrollPane);
-		
-		table = new JTable();
-		table.setBackground(Color.WHITE);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-			}
-		));
-		scrollPane.setViewportView(table);
-		
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.CYAN);
-		panel.setBounds(459, 11, 315, 370);
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(0, 43, 784, 418);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblCodigo = new JLabel("Nro. Cobranza:");
 		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblCodigo.setBounds(10, 26, 122, 28);
+		lblCodigo.setBounds(10, 31, 122, 28);
 		panel.add(lblCodigo);
 		
-		textField_1 = new JTextField();
-		textField_1.setEnabled(false);
-		textField_1.setBounds(142, 27, 86, 30);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
+		Ccodigo = new JTextField();
+		Ccodigo.setEnabled(false);
+		Ccodigo.setBounds(142, 29, 178, 30);
+		panel.add(Ccodigo);
+		Ccodigo.setColumns(10);
 		
 		JLabel lblNombre = new JLabel("Fecha:");
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNombre.setBounds(10, 90, 144, 14);
+		lblNombre.setBounds(10, 80, 144, 14);
 		panel.add(lblNombre);
-		
-		textField_2 = new JTextField();
-		textField_2.setEnabled(false);
-		textField_2.setBounds(142, 84, 163, 30);
-		panel.add(textField_2);
-		textField_2.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("Nro. Deuda:");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel.setBounds(10, 147, 108, 14);
+		lblNewLabel.setBounds(343, 49, 108, 14);
 		panel.add(lblNewLabel);
 		
-		textField_3 = new JTextField();
-		textField_3.setEnabled(false);
-		textField_3.setBounds(142, 141, 163, 30);
-		panel.add(textField_3);
-		textField_3.setColumns(10);
+		CnroDeuda = new JTextField();
+		CnroDeuda.setBounds(481, 39, 86, 30);
+		panel.add(CnroDeuda);
+		CnroDeuda.setColumns(10);
 		
 		JLabel lblRuc = new JLabel("Codigo del Cliente:");
 		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblRuc.setBounds(10, 204, 144, 14);
+		lblRuc.setBounds(343, 94, 144, 14);
 		panel.add(lblRuc);
 		
-		textField_4 = new JTextField();
-		textField_4.setEnabled(false);
-		textField_4.setBounds(142, 198, 163, 30);
-		panel.add(textField_4);
-		textField_4.setColumns(10);
+		CcodCliente = new JTextField();
+		CcodCliente.setBounds(481, 89, 86, 30);
+		panel.add(CcodCliente);
+		CcodCliente.setColumns(10);
 		
 		JLabel lblDireccion = new JLabel("Monto Pagado:");
 		lblDireccion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblDireccion.setBounds(10, 261, 122, 14);
+		lblDireccion.setBounds(10, 130, 122, 14);
 		panel.add(lblDireccion);
 		
-		textField_5 = new JTextField();
-		textField_5.setEnabled(false);
-		textField_5.setBounds(142, 255, 163, 30);
-		panel.add(textField_5);
-		textField_5.setColumns(10);
+		CmontoPagado = new JTextField();
+		CmontoPagado.setBounds(142, 120, 178, 30);
+		panel.add(CmontoPagado);
+		CmontoPagado.setColumns(10);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.CYAN);
-		panel_1.setBounds(459, 396, 315, 52);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
+		btnBuscarDuedas = new JButton("Buscar");
+		btnBuscarDuedas.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnBuscarDuedas.setBounds(570, 41, 89, 28);
+		panel.add(btnBuscarDuedas);
 		
-		JButton btnNewButton = new JButton("Guardar");
-		btnNewButton.setBounds(24, 11, 99, 29);
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnNewButton);
+		btnBuscarClientes = new JButton("Buscar");
+		btnBuscarClientes.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnBuscarClientes.setBounds(570, 88, 89, 31);
+		panel.add(btnBuscarClientes);
 		
-		JButton btnNewButton_1 = new JButton("Canselar");
-		btnNewButton_1.setBounds(128, 11, 103, 29);
-		btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnNewButton_1);
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnNuevo.setBounds(10, 167, 144, 47);
+		panel.add(btnNuevo);
 		
-		JButton btnSalir = new JButton("Salir");
-		btnSalir.setBounds(236, 11, 69, 29);
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnGuardar.setBounds(164, 167, 144, 47);
+		panel.add(btnGuardar);
+		
+		btnModificar = new JButton("Modificar");
+		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnModificar.setBounds(318, 167, 144, 47);
+		panel.add(btnModificar);
+		
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnEliminar.setBounds(472, 167, 144, 47);
+		panel.add(btnEliminar);
+		
+		btnSalir = new JButton("Salir");
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_1.add(btnSalir);
+		btnSalir.setBounds(626, 167, 144, 47);
+		panel.add(btnSalir);
+		
+		textField = new JTextField();
+		textField.setBounds(142, 225, 178, 47);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JButton btnBuscar_1 = new JButton("Buscar");
+		btnBuscar_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnBuscar_1.setBounds(328, 225, 144, 47);
+		panel.add(btnBuscar_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 283, 764, 104);
+		panel.add(scrollPane);
+		
+		CtablaCobranza = new JTable();
+		CtablaCobranza.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Codigo", "Fecha", "Monto Pagado", "Deuda", "Cliente"
+			}
+		));
+		scrollPane.setViewportView(CtablaCobranza);
+		
+		Cfecha = new JDateChooser();
+		Cfecha.setBounds(142, 70, 178, 30);
+		panel.add(Cfecha);
+		
+		panel_1 = new JPanel();
+		panel_1.setBackground(SystemColor.inactiveCaption);
+		panel_1.setBounds(10, 10, 764, 211);
+		panel.add(panel_1);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(Color.CYAN);
-		panel_2.setBounds(318, 11, 130, 223);
+		panel_2.setBackground(SystemColor.activeCaption);
+		panel_2.setBorder(UIManager.getBorder("CheckBox.border"));
+		panel_2.setBounds(0, 0, 784, 43);
 		getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
-		JButton btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(23, 34, 83, 29);
-		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnNuevo);
-		
-		JButton btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(11, 97, 107, 29);
-		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnModificar);
-		
-		JButton btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(15, 160, 99, 29);
-		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_2.add(btnEliminar);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBackground(Color.CYAN);
-		panel_3.setBounds(10, 337, 303, 49);
-		getContentPane().add(panel_3);
-		panel_3.setLayout(null);
-		
-		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.setBounds(10, 11, 87, 29);
-		panel_3.add(btnBuscar);
-		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		textField = new JTextField();
-		textField.setBounds(96, 11, 197, 29);
-		panel_3.add(textField);
-		textField.setColumns(10);
-		
-		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(10, 399, 303, 49);
-		getContentPane().add(panel_4);
-		panel_4.setBackground(Color.CYAN);
-		
-		JButton btnTodo = new JButton("Todo");
-		btnTodo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		JButton btnDeuda = new JButton("Deuda");
-		btnDeuda.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		JButton btnSinDeuda = new JButton("Sin Deuda");
-		btnSinDeuda.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panel_4.setLayout(new MigLayout("", "[87px][87px][115px]", "[29px]"));
-		panel_4.add(btnTodo, "cell 0 0,growx,aligny top");
-		panel_4.add(btnDeuda, "cell 1 0,growx,aligny top");
-		panel_4.add(btnSinDeuda, "cell 2 0,alignx left,aligny top");
+		JLabel lblCobranza = new JLabel("Cobranza");
+		lblCobranza.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
+		lblCobranza.setBounds(304, 11, 146, 32);
+		panel_2.add(lblCobranza);
+		CobranzaController controller=new CobranzaController(this);
+		controller.listarCobranza();
 
+	}
+
+	public JTextField getCcodigo() {
+		return Ccodigo;
+	}
+
+	public void setCcodigo(JTextField ccodigo) {
+		Ccodigo = ccodigo;
+	}
+
+
+	public JDateChooser getCfecha() {
+		return Cfecha;
+	}
+
+	public void setCfecha(JDateChooser cfecha) {
+		Cfecha = cfecha;
+	}
+
+	public JTextField getCnroDeuda() {
+		return CnroDeuda;
+	}
+
+	public void setCnroDeuda(JTextField cnroDeuda) {
+		CnroDeuda = cnroDeuda;
+	}
+
+	public JTextField getCcodCliente() {
+		return CcodCliente;
+	}
+
+	public void setCcodCliente(JTextField ccodCliente) {
+		CcodCliente = ccodCliente;
+	}
+
+	public JTextField getCmontoPagado() {
+		return CmontoPagado;
+	}
+
+	public void setCmontoPagado(JTextField cmontoPagado) {
+		CmontoPagado = cmontoPagado;
+	}
+
+	public JTable getCtablaCobranza() {
+		return CtablaCobranza;
+	}
+
+	public void setCtablaCobranza(JTable ctablaCobranza) {
+		CtablaCobranza = ctablaCobranza;
+	}
+
+	public JButton getBtnBuscarDueda() {
+		return btnBuscarDuedas;
+	}
+
+	public void setBtnBuscarDueda(JButton btnBuscarDueda) {
+		this.btnBuscarDuedas = btnBuscarDueda;
+	}
+
+	public JButton getBtnBuscarCliente() {
+		return btnBuscarClientes;
+	}
+
+	public void setBtnBuscarCliente(JButton btnBuscarCliente) {
+		this.btnBuscarClientes = btnBuscarCliente;
+	}
+
+	public JButton getBtnNuevo() {
+		return btnNuevo;
+	}
+
+	public void setBtnNuevo(JButton btnNuevo) {
+		this.btnNuevo = btnNuevo;
+	}
+
+	public JButton getBtnGuardar() {
+		return btnGuardar;
+	}
+
+	public void setBtnGuardar(JButton btnGuardar) {
+		this.btnGuardar = btnGuardar;
+	}
+
+	public JButton getBtnModificar() {
+		return btnModificar;
+	}
+
+	public void setBtnModificar(JButton btnModificar) {
+		this.btnModificar = btnModificar;
+	}
+
+	public JButton getBtnEliminar() {
+		return btnEliminar;
+	}
+
+	public void setBtnEliminar(JButton btnEliminar) {
+		this.btnEliminar = btnEliminar;
+	}
+
+	public JButton getBtnSalir() {
+		return btnSalir;
+	}
+
+	public void setBtnSalir(JButton btnSalir) {
+		this.btnSalir = btnSalir;
 	}
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 public class Conexion {
 		private static String Driver="org.postgresql.Driver";
@@ -18,7 +19,7 @@ public class Conexion {
 				Class.forName(Driver);
 				System.out.println("Succeso en el Driver");
 			} catch (ClassNotFoundException e) {
-				System.out.println("Error en el Driver");
+				JOptionPane.showMessageDialog(null, e.getMessage());
 				e.printStackTrace();
 			}
 			try {
@@ -26,7 +27,7 @@ public class Conexion {
 				sentencia=conexion.createStatement();
 				System.out.println("Succeso en la Conexion");
 			} catch (SQLException e) {
-			 System.out.println("Error en la Conexion");
+				JOptionPane.showMessageDialog(null, e.getMessage());
 				e.printStackTrace();
 			}
 			return conexion;

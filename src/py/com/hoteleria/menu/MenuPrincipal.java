@@ -16,17 +16,31 @@ import java.awt.Font;
 import javax.swing.JMenu;
 import javax.swing.JButton;
 
+import py.com.hoteleria.controller.ConfigController;
 import py.com.hoteleria.controller.FormController;
+
+import javax.swing.JTextField;
+import javax.swing.JPanel;
+import java.awt.SystemColor;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class MenuPrincipal extends JFrame {
 	private JMenuItem itemCliente;
-	private JButton btnCliente;
+	private JButton btnClientes;
 	private JButton btnSalir;
 	private JButton btnConbranza;
 	private JButton btnHospedaje;
 	private JMenuItem itemServicio;
 	private JMenuItem itemHabitacion;
+	private JTextField nombre;
+	private JTextField telefono;
+	private JMenuItem itemConfiguraciones;
+	private JMenuItem itemListadoDeClientes;
+	private JMenuItem itemListadoDeHabitacion;
+	private JMenuItem itemListadoDeServicio;
+	private JMenuItem itemInformeDeHospedaje;
+	private JMenuItem itemInformeDePago;
 
 	/**
 	 * Launch the application.
@@ -85,20 +99,20 @@ public class MenuPrincipal extends JFrame {
 		mnInformes.setFont(new Font("Segoe UI", Font.BOLD | Font.ITALIC, 20));
 		menuBar.add(mnInformes);
 		
-		JMenuItem mntmListadoDeClientes = new JMenuItem("Listado de Clientes");
-		mnInformes.add(mntmListadoDeClientes);
+		itemListadoDeClientes = new JMenuItem("Listado de Clientes");
+		mnInformes.add(itemListadoDeClientes);
 		
-		JMenuItem mntmListadoDeHabitacion = new JMenuItem("Listado de Habitacion");
-		mnInformes.add(mntmListadoDeHabitacion);
+		itemListadoDeHabitacion = new JMenuItem("Listado de Habitacion");
+		mnInformes.add(itemListadoDeHabitacion);
 		
-		JMenuItem mntmListadoDeServicio = new JMenuItem("Listado de Servicio");
-		mnInformes.add(mntmListadoDeServicio);
+		itemListadoDeServicio = new JMenuItem("Listado de Servicio");
+		mnInformes.add(itemListadoDeServicio);
 		
-		JMenuItem mntmInformeDeHospedaje = new JMenuItem("Informe de Hospedaje");
-		mnInformes.add(mntmInformeDeHospedaje);
+		itemInformeDeHospedaje = new JMenuItem("Informe de Hospedaje");
+		mnInformes.add(itemInformeDeHospedaje);
 		
-		JMenuItem mntmInformeDePago = new JMenuItem("Informe de Pago");
-		mnInformes.add(mntmInformeDePago);
+		itemInformeDePago = new JMenuItem("Informe de Pago");
+		mnInformes.add(itemInformeDePago);
 		
 		JMenu mnConfiguraciones = new JMenu("");
 		mnConfiguraciones.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\utilidades.png"));
@@ -108,9 +122,27 @@ public class MenuPrincipal extends JFrame {
 		JMenuItem mntmInicializacionDeDatos = new JMenuItem("Inicializacion de Datos");
 		mnConfiguraciones.add(mntmInicializacionDeDatos);
 		
-		JMenuItem mntmConfiguraciones = new JMenuItem("Configuraciones");
-		mnConfiguraciones.add(mntmConfiguraciones);
+		itemConfiguraciones = new JMenuItem("Configuraciones");
+		mnConfiguraciones.add(itemConfiguraciones);
 		getContentPane().setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(UIManager.getBorder("CheckBox.border"));
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(0, 0, 1354, 52);
+		getContentPane().add(panel);
+		
+		nombre = new JTextField();
+		panel.add(nombre);
+		nombre.setEditable(false);
+		nombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		nombre.setColumns(10);
+		
+		telefono = new JTextField();
+		panel.add(telefono);
+		telefono.setEditable(false);
+		telefono.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		telefono.setColumns(10);
 		
 		btnHospedaje = new JButton("");
 		btnHospedaje.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\hospedaje.png"));
@@ -122,10 +154,10 @@ public class MenuPrincipal extends JFrame {
 		btnConbranza.setBounds(10, 166, 221, 52);
 		getContentPane().add(btnConbranza);
 		
-		btnCliente = new JButton("");
-		btnCliente.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\clientes.png"));
-		btnCliente.setBounds(1146, 99, 156, 52);
-		getContentPane().add(btnCliente);
+		btnClientes = new JButton("");
+		btnClientes.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\clientes.png"));
+		btnClientes.setBounds(1146, 99, 156, 52);
+		getContentPane().add(btnClientes);
 		
 		btnSalir = new JButton("");
 		btnSalir.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\SALIR.png"));
@@ -155,13 +187,70 @@ public class MenuPrincipal extends JFrame {
 		JLabel lblNewLabel = new JLabel("Sabado, 23 Mayo 2017");
 		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\\u00EDndice.jpg"));
 		lblNewLabel.setForeground(Color.ORANGE);
-		lblNewLabel.setBackground(new Color(0, 153, 204));
-		lblNewLabel.setBounds(0, 0, 1354, 694);
+		lblNewLabel.setBackground(SystemColor.activeCaption);
+		lblNewLabel.setBounds(0, 0, 1354, 668);
 		getContentPane().add(lblNewLabel);
 		
 		@SuppressWarnings("unused")
 		FormController controlador=new FormController(this);
-		
+		ConfigController contro=new ConfigController(this);
+		contro.cargar();
+	}
+
+	public JMenuItem getItemListadoDeClientes() {
+		return itemListadoDeClientes;
+	}
+
+	public void setItemListadoDeClientes(JMenuItem itemListadoDeClientes) {
+		this.itemListadoDeClientes = itemListadoDeClientes;
+	}
+
+	public JMenuItem getItemListadoDeHabitacion() {
+		return itemListadoDeHabitacion;
+	}
+
+	public void setItemListadoDeHabitacion(JMenuItem itemListadoDeHabitacion) {
+		this.itemListadoDeHabitacion = itemListadoDeHabitacion;
+	}
+
+	public JMenuItem getItemListadoDeServicio() {
+		return itemListadoDeServicio;
+	}
+
+	public void setItemListadoDeServicio(JMenuItem itemListadoDeServicio) {
+		this.itemListadoDeServicio = itemListadoDeServicio;
+	}
+
+	public JMenuItem getItemInformeDeHospedaje() {
+		return itemInformeDeHospedaje;
+	}
+
+	public void setItemInformeDeHospedaje(JMenuItem itemInformeDeHospedaje) {
+		this.itemInformeDeHospedaje = itemInformeDeHospedaje;
+	}
+
+	public JMenuItem getItemInformeDePago() {
+		return itemInformeDePago;
+	}
+
+	public void setItemInformeDePago(JMenuItem itemInformeDePago) {
+		this.itemInformeDePago = itemInformeDePago;
+	}
+
+	public JTextField getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(JTextField nombre) {
+		this.nombre = nombre;
+	}
+
+	public JTextField getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(JTextField telefono) {
+		this.telefono = telefono;
 	}
 
 	public JMenuItem getItemServicio() {
@@ -178,14 +267,6 @@ public class MenuPrincipal extends JFrame {
 
 	public void setItemHabitacion(JMenuItem itemHabitacion) {
 		this.itemHabitacion = itemHabitacion;
-	}
-
-	public JButton getBtnCliente() {
-		return btnCliente;
-	}
-
-	public void setBtnCliente(JButton btnCliente) {
-		this.btnCliente = btnCliente;
 	}
 
 	public JButton getBtnSalir() {
@@ -218,5 +299,21 @@ public class MenuPrincipal extends JFrame {
 
 	public void setItemCliente(JMenuItem itemCliente) {
 		this.itemCliente = itemCliente;
+	}
+
+	public JMenuItem getItemConfiguraciones() {
+		return itemConfiguraciones;
+	}
+
+	public void setItemConfiguraciones(JMenuItem itemConfiguraciones) {
+		this.itemConfiguraciones = itemConfiguraciones;
+	}
+
+	public JButton getBtnClientes() {
+		return btnClientes;
+	}
+
+	public void setBtnClientes(JButton btnClientes) {
+		this.btnClientes = btnClientes;
 	}
 }
