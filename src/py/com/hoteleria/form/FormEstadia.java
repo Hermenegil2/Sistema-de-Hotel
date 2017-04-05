@@ -1,5 +1,8 @@
 package py.com.hoteleria.form;
-
+/**
+ * @author Hermenegil2
+ * 
+ */
 import java.awt.EventQueue;
 
 import javax.swing.JDialog;
@@ -13,25 +16,19 @@ import javax.swing.JLabel;
 
 import java.awt.Font;
 
-import javax.swing.UIManager;
-
 import py.com.hoteleria.controller.EstadiaController;
-import py.com.hoteleria.controller.FechaController;
-import py.com.hoteleria.controller.resta_fechas;
 
 import java.awt.SystemColor;
-
-import com.toedter.calendar.JDateChooser;
-
 import java.awt.Color;
 
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
+import javax.swing.JTabbedPane;
+import javax.swing.border.TitledBorder;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.sql.Date;
-import java.util.Calendar;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 
 @SuppressWarnings("serial")
 public class FormEstadia extends JDialog {
@@ -42,31 +39,30 @@ public class FormEstadia extends JDialog {
 	private JTextField EmontoDescue;
 	private JTextField Eobservacion;
 	private JTable tableEstadia;
-	private JTextField textField;
+	private JTextField EBuscarEstadia;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnModificar;
 	private JButton btnEliminar;
-	private JButton btnCerrar;
+	private JButton btnSalir;
 	private JButton btnBuscar_2;
 	private JButton btnBuscarCliente;
 	private JButton btnBuscarHabita;
-	private JDateChooser EfechaEntrada;
-	private JDateChooser EfechaSalida;
 	public static JTextField Enombre;
-	private JTextField Ecosto;
 	private JButton btnDetalle;
-	private JTable tableDetalle;
+	public static JTable tableDetalle;
 	private JTextField EtotalServicio;
-	private JTextField Etotal;
-	private JTextField Eservicio;
-	private JButton btnCierre_1;
-	private JButton btnAtras;
 	private JButton btnActivo;
 	private JButton btnInactivo;
 	private JButton btnTodos;
 	private JButton btnCierre;
 	private JButton btnCancelar;
+	private JTextField EfechaSalida;
+	private JTabbedPane tabbedPane;
+	private JPanel panel_6;
+	private JButton btnCierre_C;
+	private JTextField Efecha;
+	public static JTextField EmontoTotal;
 
 	/**
 	 * Launch the application.
@@ -90,184 +86,233 @@ public class FormEstadia extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormEstadia() {
+		setType(Type.POPUP);
+		getContentPane().setBackground(SystemColor.activeCaption);
 		setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 14));
 		setTitle("Formulario de Estadia");
-		setBounds(100, 100,800, 600);
+		setBounds(100, 100,928, 731);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new EmptyBorder(6, 0, 0, 0));
+		panel.setBorder(new TitledBorder(null, "Estadia", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 43, 784, 514);
+		panel.setBounds(6, 6, 895, 680);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(10, 264, 247, 30);
-		panel.add(textField);
-		textField.setColumns(10);
-		
-		btnBuscar_2 = new JButton("Buscar");
-		btnBuscar_2.setBounds(264, 263, 100, 33);
-		panel.add(btnBuscar_2);
-		btnBuscar_2.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		panel_6 = new JPanel();
+		panel_6.setBackground(SystemColor.activeCaption);
+		panel_6.setBorder(new TitledBorder(null, "Area de Vista", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_6.setBounds(15, 24, 511, 287);
+		panel.add(panel_6);
+		panel_6.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(14, 18, 487, 165);
+		panel_6.add(scrollPane);
 		scrollPane.setEnabled(false);
-		scrollPane.setBounds(6, 6, 358, 220);
-		panel.add(scrollPane);
 		
 		tableEstadia = new JTable();
+		tableEstadia.setToolTipText("");
 		tableEstadia.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
-				"Nro. Estadia", "Clientes", "Habitacion", "F. Entrada", "Monto"
+				"Nro. Estadia", "Clientes", "Habitacion", "F. Entrada", "Monto", "Estado"
 			}
 		) {
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] {
+				Object.class, Object.class, Object.class, Object.class, Object.class, Boolean.class
+			};
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
 			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
+				false, false, false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
 		tableEstadia.getColumnModel().getColumn(0).setResizable(false);
+		tableEstadia.getColumnModel().getColumn(0).setPreferredWidth(44);
 		tableEstadia.getColumnModel().getColumn(1).setResizable(false);
+		tableEstadia.getColumnModel().getColumn(1).setPreferredWidth(145);
 		tableEstadia.getColumnModel().getColumn(2).setResizable(false);
+		tableEstadia.getColumnModel().getColumn(2).setPreferredWidth(41);
 		tableEstadia.getColumnModel().getColumn(3).setResizable(false);
 		tableEstadia.getColumnModel().getColumn(4).setResizable(false);
+		tableEstadia.getColumnModel().getColumn(5).setResizable(false);
 		scrollPane.setViewportView(tableEstadia);
 		
+		btnActivo = new JButton("Activo");
+		btnActivo.setBounds(56, 192, 96, 32);
+		panel_6.add(btnActivo);
+		btnActivo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnInactivo = new JButton("Inactivo");
+		btnInactivo.setBounds(208, 192, 110, 32);
+		panel_6.add(btnInactivo);
+		btnInactivo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnTodos = new JButton("Todo");
+		btnTodos.setBounds(374, 192, 78, 32);
+		panel_6.add(btnTodos);
+		btnTodos.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		EBuscarEstadia = new JTextField();
+		EBuscarEstadia.setBounds(163, 227, 338, 43);
+		panel_6.add(EBuscarEstadia);
+		EBuscarEstadia.setColumns(10);
+		
+		btnBuscar_2 = new JButton("Buscar");
+		btnBuscar_2.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Icono_Buscar.png"));
+		btnBuscar_2.setBounds(14, 225, 145, 45);
+		panel_6.add(btnBuscar_2);
+		btnBuscar_2.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel_2.setBounds(487, 5, 291, 211);
+		panel_2.setBackground(SystemColor.activeCaption);
+		panel_2.setBorder(new TitledBorder(null, "Area de Trabajo", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_2.setBounds(538, 24, 341, 211);
 		panel.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblCodigo = new JLabel("Codigo:");
-		lblCodigo.setBounds(6, 20, 100, 14);
+		lblCodigo.setBounds(6, 23, 92, 14);
 		panel_2.add(lblCodigo);
 		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblObservacionDeLa = new JLabel("Obs. :");
-		lblObservacionDeLa.setBounds(6, 180, 100, 14);
+		lblObservacionDeLa.setBounds(6, 171, 92, 14);
 		panel_2.add(lblObservacionDeLa);
 		lblObservacionDeLa.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		JLabel lblNombre = new JLabel("F. Entrada:");
-		lblNombre.setBounds(6, 52, 100, 14);
-		panel_2.add(lblNombre);
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		
 		JLabel lblNewLabel = new JLabel("Cliente:");
-		lblNewLabel.setBounds(6, 84, 100, 14);
+		lblNewLabel.setBounds(6, 97, 92, 14);
 		panel_2.add(lblNewLabel);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblRuc = new JLabel("Habitacion:");
-		lblRuc.setBounds(6, 116, 100, 14);
+		lblRuc.setBounds(6, 134, 84, 14);
 		panel_2.add(lblRuc);
 		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		JLabel lblCostoXHab = new JLabel("Monto:");
-		lblCostoXHab.setBounds(6, 148, 100, 14);
-		panel_2.add(lblCostoXHab);
-		lblCostoXHab.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		
 		Ecodigo = new JTextField();
-		Ecodigo.setBounds(109, 6, 176, 30);
+		Ecodigo.setBounds(91, 18, 240, 30);
 		panel_2.add(Ecodigo);
 		Ecodigo.setEditable(false);
 		Ecodigo.setColumns(10);
 		
-		EfechaEntrada = new JDateChooser();
-		EfechaEntrada.getCalendarButton().setEnabled(false);
-		EfechaEntrada.setBounds(109, 40, 176, 30);
-		panel_2.add(EfechaEntrada);
-		
 		Enombre = new JTextField();
 		Enombre.setEditable(false);
-		Enombre.setBounds(109, 74, 140, 30);
+		Enombre.setBounds(91, 90, 136, 30);
 		panel_2.add(Enombre);
 		Enombre.setColumns(10);
 		
-		btnBuscarCliente = new JButton("Buscar");
-		btnBuscarCliente.setEnabled(false);
-		btnBuscarCliente.setBounds(251, 74, 34, 30);
+		btnBuscarCliente = new JButton("");
+		btnBuscarCliente.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Buscar-Clientes.png"));
+		btnBuscarCliente.setBounds(267, 79, 64, 44);
 		panel_2.add(btnBuscarCliente);
 		btnBuscarCliente.setBackground(Color.LIGHT_GRAY);
-		btnBuscarCliente.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnBuscarCliente.setFont(new Font("Tahoma", Font.BOLD, 5));
 		
 		ECodHab = new JTextField();
 		ECodHab.setEditable(false);
-		ECodHab.setBounds(109, 108, 140, 30);
+		ECodHab.setBounds(91, 130, 174, 30);
 		panel_2.add(ECodHab);
 		ECodHab.setColumns(10);
 		
-		btnBuscarHabita = new JButton("Buscar");
-		btnBuscarHabita.setEnabled(false);
-		btnBuscarHabita.setBounds(251, 108, 34, 30);
+		btnBuscarHabita = new JButton("");
+		btnBuscarHabita.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Icono_Buscar.png"));
+		btnBuscarHabita.setBounds(267, 128, 64, 42);
 		panel_2.add(btnBuscarHabita);
 		btnBuscarHabita.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(109, 176, 176, 30);
+		scrollPane_1.setBounds(91, 170, 240, 30);
 		panel_2.add(scrollPane_1);
 		
 		Eobservacion = new JTextField();
+		Eobservacion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					btnGuardar.requestFocus();
+				}
+			}
+		});
 		Eobservacion.setEditable(false);
 		scrollPane_1.setViewportView(Eobservacion);
 		Eobservacion.setColumns(10);
 		
 		ECodCliente = new JTextField();
-		ECodCliente.setBounds(234, 77, 20, 21);
+		ECodCliente.setEditable(false);
+		ECodCliente.setBounds(225, 90, 40, 30);
 		panel_2.add(ECodCliente);
 		ECodCliente.setColumns(10);
 		
-		ECodCliente.setVisible(false);
+		JLabel lblFecha = new JLabel("Fecha:");
+		lblFecha.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		lblFecha.setBounds(6, 60, 92, 14);
+		panel_2.add(lblFecha);
+		
+		Efecha = new JTextField();
+		Efecha.setFont(new Font("SansSerif", Font.BOLD, 14));
+		Efecha.setEditable(false);
+		Efecha.setColumns(10);
+		Efecha.setBounds(91, 50, 240, 30);
+		panel_2.add(Efecha);
+		
 		
 		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(null, "Area de Botones", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
 		panel_3.setBackground(SystemColor.activeCaption);
-		panel_3.setBounds(361, 6, 128, 267);
+		panel_3.setBounds(15, 324, 864, 108);
 		panel.add(panel_3);
-		
-		btnNuevo = new JButton("Nuevo");
-		panel_3.add(btnNuevo);
-		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnGuardar = new JButton("Guardar");
-		panel_3.add(btnGuardar);
-		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		panel_3.setLayout(null);
 		
 		btnModificar = new JButton("Modificar");
+		btnModificar.setToolTipText("Modificar");
+		btnModificar.setBounds(35, 17, 120, 80);
 		panel_3.add(btnModificar);
 		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setBounds(190, 17, 120, 80);
 		panel_3.add(btnEliminar);
 		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
-		btnCancelar = new JButton("Cancelar");
-		panel_3.add(btnCancelar);
-		btnCancelar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		btnSalir = new JButton("Salir");
+		btnSalir.setToolTipText("Salir");
+		btnSalir.setBounds(753, 17, 77, 80);
+		panel_3.add(btnSalir);
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
-		btnCerrar = new JButton("Salir");
-		panel_3.add(btnCerrar);
-		btnCerrar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnCierre = new JButton("Cierre");
+		btnCierre = new JButton("Cierre de la Estadia");
+		btnCierre.setBounds(345, 17, 196, 80);
 		panel_3.add(btnCierre);
+		btnCierre.setToolTipText("Preciona el Cierre Para Saber el Monto Total");
 		btnCierre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
 		btnDetalle = new JButton("Detalle");
+		btnDetalle.setBounds(576, 17, 142, 80);
+		panel_3.add(btnDetalle);
+		btnDetalle.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\View_Details-.png"));
 		btnDetalle.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnDetalle.setBounds(487, 228, 291, 32);
-		panel.add(btnDetalle);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(394, 444, 472, 193);
+		panel.add(tabbedPane);
+		
+		JPanel panel_8 = new JPanel();
+		tabbedPane.addTab("Detalle del Servicio", null, panel_8, null);
+		panel_8.setLayout(null);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(393, 272, 385, 193);
-		panel.add(scrollPane_2);
+		scrollPane_2.setBounds(6, 0, 460, 116);
+		panel_8.add(scrollPane_2);
 		
 		tableDetalle = new JTable();
 		tableDetalle.setModel(new DefaultTableModel(
@@ -280,142 +325,110 @@ public class FormEstadia extends JDialog {
 		scrollPane_2.setViewportView(tableDetalle);
 		
 		JLabel lblTotalServicio = new JLabel("Total Servicio:");
+		lblTotalServicio.setBounds(6, 128, 166, 27);
+		panel_8.add(lblTotalServicio);
 		lblTotalServicio.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
-		lblTotalServicio.setBounds(403, 477, 166, 27);
-		panel.add(lblTotalServicio);
 		
 		EtotalServicio = new JTextField();
+		EtotalServicio.setBounds(169, 127, 297, 30);
+		panel_8.add(EtotalServicio);
+		EtotalServicio.setHorizontalAlignment(SwingConstants.CENTER);
 		EtotalServicio.setEditable(false);
 		EtotalServicio.setFont(new Font("SansSerif", Font.BOLD, 16));
 		EtotalServicio.setColumns(10);
-		EtotalServicio.setBounds(554, 477, 224, 30);
-		panel.add(EtotalServicio);
 		
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(10, 303, 350, 162);
+		panel_4.setBorder(new TitledBorder(null, "Area de Deuda", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_4.setBackground(SystemColor.activeCaption);
+		panel_4.setBounds(15, 434, 350, 237);
 		panel.add(panel_4);
 		panel_4.setLayout(null);
 		
 		JLabel lblDireccion = new JLabel("F. Salida:");
-		lblDireccion.setBounds(6, 6, 122, 14);
+		lblDireccion.setBounds(6, 30, 122, 14);
 		panel_4.add(lblDireccion);
 		lblDireccion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		JLabel lblHabitacion = new JLabel("Monto:");
-		lblHabitacion.setBounds(6, 32, 122, 14);
-		panel_4.add(lblHabitacion);
-		lblHabitacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		
-		JLabel lblServicio = new JLabel("Servicio:");
-		lblServicio.setBounds(6, 58, 122, 14);
-		panel_4.add(lblServicio);
-		lblServicio.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		
 		JLabel lblMontoDeDescuento = new JLabel("Descuento:");
-		lblMontoDeDescuento.setBounds(6, 85, 86, 14);
+		lblMontoDeDescuento.setBounds(6, 93, 86, 14);
 		panel_4.add(lblMontoDeDescuento);
 		lblMontoDeDescuento.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		JLabel lblMontoTotal = new JLabel("Total:");
-		lblMontoTotal.setBounds(6, 116, 122, 14);
-		panel_4.add(lblMontoTotal);
-		lblMontoTotal.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		
 		EmontoDescue = new JTextField();
+		EmontoDescue.setHorizontalAlignment(SwingConstants.CENTER);
+		EmontoDescue.setFont(new Font("SansSerif", Font.BOLD, 14));
 		EmontoDescue.setEditable(false);
-		EmontoDescue.setBounds(104, 84, 240, 26);
+		EmontoDescue.setBounds(104, 87, 229, 26);
 		panel_4.add(EmontoDescue);
 		EmontoDescue.setColumns(10);
 		
-		EfechaSalida = new JDateChooser();
-		EfechaSalida.getCalendarButton().setEnabled(false);
-		EfechaSalida.setBounds(104, 6, 188, 26);
+		Emonto = new JTextField();
+		Emonto.setHorizontalAlignment(SwingConstants.CENTER);
+		Emonto.setFont(new Font("SansSerif", Font.BOLD, 14));
+		Emonto.setBounds(104, 56, 229, 26);
+		panel_4.add(Emonto);
+		Emonto.setEditable(false);
+		Emonto.setColumns(10);
+		
+		JLabel lblCostoXHab = new JLabel("Monto:");
+		lblCostoXHab.setBounds(6, 56, 100, 14);
+		panel_4.add(lblCostoXHab);
+		lblCostoXHab.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		EfechaSalida = new JTextField();
+		EfechaSalida.setEditable(false);
+		EfechaSalida.setFont(new Font("SansSerif", Font.BOLD, 14));
+		EfechaSalida.setHorizontalAlignment(SwingConstants.CENTER);
+		EfechaSalida.setColumns(10);
+		EfechaSalida.setBounds(104, 24, 229, 26);
 		panel_4.add(EfechaSalida);
 		
-		Etotal = new JTextField();
-		Etotal.setEditable(false);
-		Etotal.setColumns(10);
-		Etotal.setBounds(104, 111, 240, 26);
-		panel_4.add(Etotal);
+		btnCierre_C = new JButton("Cerrar");
+		btnCierre_C.setBounds(16, 160, 317, 59);
+		panel_4.add(btnCierre_C);
 		
-		Eservicio = new JTextField();
-		Eservicio.setEditable(false);
-		Eservicio.setColumns(10);
-		Eservicio.setBounds(104, 58, 240, 26);
-		panel_4.add(Eservicio);
+		JLabel label = new JLabel("Monto Total:");
+		label.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		label.setBounds(6, 125, 100, 14);
+		panel_4.add(label);
 		
-		btnCierre_1 = new JButton("Cierre");
-		btnCierre_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				
-			}
-
-			
-		});
-		btnCierre_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnCierre_1.setBounds(10, 472, 100, 32);
-		panel.add(btnCierre_1);
+		EmontoTotal = new JTextField();
+		EmontoTotal.setHorizontalAlignment(SwingConstants.CENTER);
+		EmontoTotal.setFont(new Font("SansSerif", Font.BOLD, 14));
+		EmontoTotal.setEditable(false);
+		EmontoTotal.setColumns(10);
+		EmontoTotal.setBounds(104, 119, 229, 26);
+		panel_4.add(EmontoTotal);
 		
-		btnAtras = new JButton("Atras");
+		JPanel panel_7 = new JPanel();
+		panel_7.setBackground(SystemColor.activeCaption);
+		panel_7.setBorder(new TitledBorder(null, "Area de Vista", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_7.setBounds(381, 434, 498, 237);
+		panel.add(panel_7);
+		panel_7.setLayout(null);
 		
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.setBounds(651, 247, 112, 64);
+		panel.add(btnGuardar);
+		btnGuardar.setToolTipText("Guardar");
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
-		btnAtras.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnAtras.setBounds(264, 472, 96, 32);
-		panel.add(btnAtras);
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setBounds(767, 247, 112, 64);
+		panel.add(btnCancelar);
+		btnCancelar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
-		btnActivo = new JButton("Activo");
-		btnActivo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnActivo.setBounds(30, 228, 96, 32);
-		panel.add(btnActivo);
-		
-		btnInactivo = new JButton("Inactivo");
-		btnInactivo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnInactivo.setBounds(144, 228, 110, 32);
-		panel.add(btnInactivo);
-		
-		btnTodos = new JButton("Todo");
-		btnTodos.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnTodos.setBounds(276, 228, 78, 32);
-		panel.add(btnTodos);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(UIManager.getBorder("DesktopIcon.border"));
-		panel_1.setBackground(SystemColor.activeCaption);
-		panel_1.setBounds(0, 0, 984, 42);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblEstada = new JLabel("Estad\u00EDa");
-		lblEstada.setBounds(355, 11, 104, 31);
-		lblEstada.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
-		panel_1.add(lblEstada);
-		
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.setBounds(548, 247, 102, 64);
+		panel.add(btnNuevo);
+		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		EstadiaController contro=new EstadiaController(this);
 		contro.listarEstadia();
 		contro.ocultarBoton();
+		contro.centrarEstadia();
 		
-		EfechaEntrada.setEnabled(false);
-		EfechaSalida.setEnabled(false);
-		
-		Emonto = new JTextField();
-		Emonto.setBounds(109, 142, 176, 26);
-		panel_2.add(Emonto);
-		Emonto.setEditable(false);
-		Emonto.setColumns(10);
-		EfechaSalida.setEnabled(false);
-		
-		Ecosto = new JTextField();
-		Ecosto.setBounds(104, 32, 240, 26);
-		panel_4.add(Ecosto);
-		Ecosto.setEditable(false);
-		Ecosto.setColumns(10);
-		
-		FechaController controller=new FechaController(this);
-		
-		resta_fechas control=new resta_fechas(this);
-		
+	
 	}
 
 	
@@ -433,6 +446,7 @@ public class FormEstadia extends JDialog {
 		return tableDetalle;
 	}
 
+	@SuppressWarnings("static-access")
 	public void setTableDetalle(JTable tableDetalle) {
 		this.tableDetalle = tableDetalle;
 	}
@@ -493,12 +507,12 @@ public class FormEstadia extends JDialog {
 		this.btnEliminar = btnEliminar;
 	}
 
-	public JButton getBtnCerrar() {
-		return btnCerrar;
+	public JButton getBtnSalir() {
+		return btnSalir;
 	}
 
-	public void setBtnCerrar(JButton btnCerrar) {
-		this.btnCerrar = btnCerrar;
+	public void setBtnSalir(JButton btnSalir) {
+		this.btnSalir = btnSalir;
 	}
 
 	public JButton getBtnBuscar_2() {
@@ -560,24 +574,17 @@ public class FormEstadia extends JDialog {
 	}
 
 
-	public JDateChooser getEfechaEntrada() {
-		return EfechaEntrada;
-	}
 
-	public void setEfechaEntrada(JDateChooser efechaEntrada) {
-		EfechaEntrada = efechaEntrada;
-	}
 
-	public JDateChooser getEfechaSalida() {
+	
+	
+
+	public JTextField getEfechaSalida() {
 		return EfechaSalida;
 	}
 
-	public void setEfechaSalida(JDateChooser efechaSalida) {
+	public void setEfechaSalida(JTextField efechaSalida) {
 		EfechaSalida = efechaSalida;
-	}
-
-	public JTextField getEcosto() {
-		return Ecosto;
 	}
 
 	public JButton getBtnActivo() {
@@ -604,18 +611,6 @@ public class FormEstadia extends JDialog {
 		this.btnTodos = btnTodos;
 	}
 
-	public void setEcosto(JTextField ecosto) {
-		Ecosto = ecosto;
-	}
-
-	public JButton getBtnCierre_1() {
-		return btnCierre_1;
-	}
-
-	public void setBtnCierre_1(JButton btnCierre_1) {
-		this.btnCierre_1 = btnCierre_1;
-	}
-
 	public JTextField getEtotalServicio() {
 		return EtotalServicio;
 	}
@@ -624,30 +619,7 @@ public class FormEstadia extends JDialog {
 		EtotalServicio = etotalServicio;
 	}
 
-	public JButton getBtnAtras() {
-		return btnAtras;
-	}
-
-	public void setBtnAtras(JButton btnAtras) {
-		this.btnAtras = btnAtras;
 	
-}
-
-	public JTextField getEtotal() {
-		return Etotal;
-	}
-
-	public void setEtotal(JTextField etotal) {
-		Etotal = etotal;
-	}
-
-	public JTextField getEservicio() {
-		return Eservicio;
-	}
-
-	public void setEservicio(JTextField eservicio) {
-		Eservicio = eservicio;
-	}
 
 	public JButton getBtnCierre() {
 		return btnCierre;
@@ -664,8 +636,38 @@ public class FormEstadia extends JDialog {
 	public void setBtnCancelar(JButton btnCancelar) {
 		this.btnCancelar = btnCancelar;
 	}
+
 	
-	
-	
-	
+
+	public JButton getBtnCierre_C() {
+		return btnCierre_C;
+	}
+
+	public void setBtnCierre_C(JButton btnCierre_C) {
+		this.btnCierre_C = btnCierre_C;
+	}
+
+	public JTextField getEfecha() {
+		return Efecha;
+	}
+
+	public void setEfecha(JTextField efecha) {
+		Efecha = efecha;
+	}
+
+	public JTextField getEmontoTotal() {
+		return EmontoTotal;
+	}
+
+	public void setEmontoTotal(JTextField emontoTotal) {
+		EmontoTotal = emontoTotal;
+	}
+
+	public JTextField getEBuscarEstadia() {
+		return EBuscarEstadia;
+	}
+
+	public void setEBuscarEstadia(JTextField eBuscarEstadia) {
+		EBuscarEstadia = eBuscarEstadia;
+	}
 }

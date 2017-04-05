@@ -26,6 +26,8 @@ public class FormController implements ActionListener {
 		ventana.getItemConfiguraciones().addActionListener(this);
 		ventana.getBtnClientes().addActionListener(this);
 		ventana.getItemListadoDeClientes().addActionListener(this);
+		ventana.getItemHospedaje().addActionListener(this);
+		ventana.getItemCobranza().addActionListener(this);
 	}
 	
 	private void cliente() {
@@ -91,6 +93,16 @@ public class FormController implements ActionListener {
 			ListadoClientes l=new ListadoClientes();
 			l.setLocationRelativeTo(null);
 			l.setVisible(true);
+		}
+		if (e.getSource().equals(ventana.getItemCobranza())) {
+			FormCobranza form=new FormCobranza();
+			form.setLocationRelativeTo(null);
+			form.setVisible(true);
+		}
+		if (e.getSource().equals(ventana.getItemHospedaje())) {
+			FormEstadia form=new FormEstadia();
+			form.setLocationRelativeTo(null);
+			form.setVisible(true);
 		}
 	}
 

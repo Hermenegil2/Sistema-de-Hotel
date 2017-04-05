@@ -9,7 +9,7 @@ import py.com.hoteleria.util.Conexion;
 
 public class CobranzaDAO {
 	public void guardar(Cobranza cobranza){
-		String sql="INSERT INTO cobranza(cob_fecha, cob_nrodeuda, cob_codcli, cob_pagado) VALUES ('"+cobranza.getFecha()+"',"+cobranza.getDeuda().getCodigo()+","+cobranza.getCliente().getCodigo()+","+cobranza.getMontoPagado()+");";
+		String sql="INSERT INTO cobranza(cob_fecha, cob_nrodeu, cob_codcli, cob_pagado) VALUES ('"+cobranza.getFecha()+"',"+cobranza.getDeuda().getCodigo()+","+cobranza.getCliente().getCodigo()+","+cobranza.getMontoPagado()+");";
 		System.out.println(sql);
 		Conexion.abrirConexion();
 		try {
@@ -23,14 +23,14 @@ public class CobranzaDAO {
 	public static ArrayList<Cobranza> listarCobranza(){
 		 ArrayList<Cobranza> lista=new ArrayList<>();
 		Cobranza cobranza=null;
-	  	   String sql="SELECT cob_codigo, cob_fecha,deuda.deu_monto,cliente.cli_nombre, cob_pagado FROM cobranza INNER JOIN deuda ON cobranza.cob_nrodeuda=deuda.deu_numero INNER JOIN cliente ON cobranza.cob_codcli=cliente.cli_codigo;";
+	  	   String sql="SELECT cob_numero,cob_fecha,deu_monto,cli_nombre,cob_pagado FROM cobranza INNER JOIN cliente ON cobranza.cob_codcli=cliente.cli_codigo INNER JOIN deuda ON cobranza.cob_nrodeu=deuda.deu_numero";
 	  	   
 	  	  Conexion.abrirConexion();
 	  	  try {
 				ResultSet rs=Conexion.sentencia.executeQuery(sql);
 				while(rs.next()){
 					cobranza=new Cobranza();
-					cobranza.setCodigo(rs.getInt("cob_codigo"));
+					cobranza.setCodigo(rs.getInt("cob_numero"));
 					cobranza.setFecha(rs.getDate("cob_fecha"));
 					cobranza.getDeuda().setMontoDeuda(rs.getDouble("deu_monto"));
 					cobranza.getCliente().setNombre(rs.getString("cli_nombre"));
@@ -98,7 +98,7 @@ public class CobranzaDAO {
 	     }
 	
 	public static Cobranza obtenerUltimoId(){
-		String sql="SELECT MAX(cob_codigo)+1 AS cob_codigo FROM cobranza;";
+		String sql="SELECT MAX(cob_numero)+1 AS cob_codigo FROM cobranza;";
 		System.out.println(sql);
 		Conexion.abrirConexion();
 		Cobranza cobranza=null;

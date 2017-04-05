@@ -23,7 +23,7 @@ public class DetalleDAO {
 	public static ArrayList<Detalle> listarDetalle(int codigo){
 		 ArrayList<Detalle> lista=new ArrayList<Detalle>();
 		 Detalle detalle=null;
-	  	   String sql="SELECT * FROM detalle WHERE det_nroest="+codigo+";";
+	  	   String sql="SELECT * FROM detalle  INNER JOIN servicio ON detalle.det_codser=servicio.ser_codigo WHERE det_nroest="+codigo+"";
 	  	   
 	  	  Conexion.abrirConexion();
 	  	  try {
@@ -33,7 +33,7 @@ public class DetalleDAO {
 					detalle.setCodigo(rs.getInt("det_numero"));
 					detalle.getEstadia().setCodigo(rs.getInt("det_nroest"));
 					detalle.getServicio().setCodigo(rs.getInt("det_codser"));
-					//detalle.getServicio().setDescripcionServicio(rs.getString("ser_descri"));
+					detalle.getServicio().setDescripcionServicio(rs.getString("ser_descri"));
 					detalle.setMonto(rs.getInt("det_monto"));
 					lista.add(detalle);
 				}
@@ -48,15 +48,17 @@ public class DetalleDAO {
 	  	  
 	  	  
 	     }
-	public static void modificarDetalle(Detalle detalle){
-	 	   String sql="";
-	 	   Conexion.abrirConexion();
-	 	   try {
-				Conexion.sentencia.executeUpdate(sql);
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
-				e.printStackTrace();
-			}
-	 	   Conexion.cerrarConexion();
-	 }
+	public static void eliminarServicio(Detalle detalle){
+		String sql="DELETE FROM detalle WHERE det_numero="+detalle.getCodigo()+";";
+	    System.out.println(sql);
+	    Conexion.abrirConexion();
+	    try {
+			Conexion.sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+			e.printStackTrace();
+		}
+	    Conexion.cerrarConexion();
+	}
+	
 }

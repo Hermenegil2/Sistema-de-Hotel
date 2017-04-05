@@ -8,7 +8,7 @@ import py.com.hoteleria.util.Conexion;
 
 public class HabitacionDAO {
 	public void guardar(Habitacion habita){
-		String sql="INSERT INTO habita(hab_descri, hab_mondia, hab_obse) VALUES ('"+habita.getDescripcionHabitacion()+"',"+habita.getMontoDia()+",'"+habita.getObservacion()+"');";
+		String sql="INSERT INTO habita(hab_descri, hab_mondia, hab_obse, hab_activo) VALUES ('"+habita.getDescripcionHabitacion()+"',"+habita.getMontoDia()+",'"+habita.getObservacion()+"',"+habita.isEstado()+");";
 		System.out.println(sql);
 		Conexion.abrirConexion();
 		try {
@@ -19,33 +19,7 @@ public class HabitacionDAO {
 		}
 		Conexion.cerrarConexion();
 }
-	public static ArrayList<Habitacion> listarHabitacion(){
-		 ArrayList<Habitacion> lista=new ArrayList<>();
-		 Habitacion habita=null;
-	  	   String sql="SELECT * FROM habita WHERE hab_estado=false ";
-	  	   
-	  	  Conexion.abrirConexion();
-	  	  try {
-				ResultSet rs=Conexion.sentencia.executeQuery(sql);
-				while(rs.next()){
-					habita=new Habitacion();
-					habita.setCodigo(rs.getInt("hab_codigo"));
-					habita.setDescripcionHabitacion(rs.getString("hab_descri"));
-					habita.setMontoDia(rs.getDouble("hab_mondia"));
-					habita.setObservacion(rs.getString("hab_obse"));
-					lista.add(habita);
-				}
-				
-			} catch (SQLException e) {
-			
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Error al traer la lista de Habitacion"+e.getMessage());
-			}
-	  	  Conexion.cerrarConexion();
-	  	  return lista;
-	  	  
-	  	  
-	     }
+
 	public static void modificarHabitacion(Habitacion habita){
  	   String sql="UPDATE habita SET hab_descri='"+habita.getDescripcionHabitacion()+"', hab_mondia="+habita.getMontoDia()+", hab_obse='"+habita.getObservacion()+"' WHERE hab_codigo="+habita.getCodigo()+" ;";
  	   Conexion.abrirConexion();
@@ -58,7 +32,7 @@ public class HabitacionDAO {
  	   Conexion.cerrarConexion();
  }
 	public static void actualizarHabitacion(Habitacion habita){
-	 	   String sql="UPDATE habita SET hab_estado="+true+" WHERE hab_codigo="+habita.getCodigo()+" ;";
+	 	   String sql="UPDATE habita SET hab_activo="+true+" WHERE hab_codigo="+habita.getCodigo()+" ;";
 	 	   Conexion.abrirConexion();
 	 	   try {
 				Conexion.sentencia.executeUpdate(sql);
@@ -69,7 +43,7 @@ public class HabitacionDAO {
 	 	   Conexion.cerrarConexion();
 	 }
 	public static void actualizarHabitacionFalse(Habitacion habita){
-	 	   String sql="UPDATE habita SET hab_estado="+false+" WHERE hab_codigo="+habita.getCodigo()+" ;";
+	 	   String sql="UPDATE habita SET hab_activo="+false+" WHERE hab_codigo="+habita.getCodigo()+" ;";
 	 	   Conexion.abrirConexion();
 	 	   try {
 				Conexion.sentencia.executeUpdate(sql);
@@ -120,7 +94,32 @@ public class HabitacionDAO {
 	public static  ArrayList<Habitacion> listarHabitacionDes(String descripcion){
 		ArrayList<Habitacion> lista=new ArrayList<Habitacion>();
 		Habitacion habita=null;
-		String sql="SELECT hab_codigo, hab_descri, hab_mondia FROM habita WHERE hab_descri IlIKE '%"+descripcion+"%' ;";
+		String sql="SELECT * FROM habita WHERE hab_descri IlIKE '%"+descripcion+"%' ORDER BY hab_codigo ASC ;";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				    habita=new Habitacion();
+				    habita.setCodigo(rs.getInt("hab_codigo"));
+					habita.setDescripcionHabitacion(rs.getString("hab_descri"));
+					habita.setMontoDia(rs.getDouble("hab_mondia"));
+					habita.setObservacion(rs.getString("hab_obse"));
+				  lista.add(habita);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
+	}
+	
+	public static  ArrayList<Habitacion> listarHabitacionLista(String descripcion){
+		ArrayList<Habitacion> lista=new ArrayList<Habitacion>();
+		Habitacion habita=null;
+		String sql="SELECT hab_codigo, hab_descri, hab_mondia FROM habita WHERE hab_descri IlIKE '%"+descripcion+"%' AND hab_activo=false ORDER BY hab_codigo DESC ;";
 		System.out.println(sql);
 		Conexion.abrirConexion();
 		try {
@@ -157,5 +156,53 @@ public class HabitacionDAO {
 		}
 		Conexion.cerrarConexion();
 		return habita;
+	}
+	public static  ArrayList<Habitacion> listadoHabitacionCodigo(int desde, int hasta){
+		ArrayList<Habitacion> lista=new ArrayList<Habitacion>();
+		Habitacion habita=null;
+		String sql="Select * from habita where hab_codigo  BETWEEN "+desde+" AND "+hasta+"";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				 habita=new Habitacion();
+				 habita.setCodigo(rs.getInt("hab_codigo"));
+				 habita.setDescripcionHabitacion(rs.getString("hab_descri"));
+				 habita.setMontoDia(rs.getDouble("hab_mondia"));
+				 habita.setObservacion(rs.getString("hab_obse"));
+				  lista.add(habita);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
+	}
+	public static  ArrayList<Habitacion> listadoHabitacionNombre(String desde, String hasta){
+		ArrayList<Habitacion> lista=new ArrayList<Habitacion>();
+		Habitacion habita=null;
+		String sql="Select * from habita where hab_descri  BETWEEN '"+desde+"' AND '"+hasta+"'";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				 habita=new Habitacion();
+				 habita.setCodigo(rs.getInt("hab_codigo"));
+				 habita.setDescripcionHabitacion(rs.getString("hab_descri"));
+				 habita.setMontoDia(rs.getDouble("hab_mondia"));
+				 habita.setObservacion(rs.getString("hab_obse"));
+				  lista.add(habita);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
 	}
 }

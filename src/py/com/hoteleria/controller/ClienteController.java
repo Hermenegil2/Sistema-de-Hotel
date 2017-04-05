@@ -8,7 +8,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -36,16 +35,33 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 		ventana.getBtnBuscar().addActionListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
 		ventana.getCli_telefono().addKeyListener(this);
+		ventana.getBtnGuardar().addKeyListener(this);
 		
 		
 	}
 	
+	public boolean verificar(){
+		boolean estado = false;
+		boolean veri = false;
+		  dao = new ClienteDAO();
+		  if (ventana.getCli_cedula().getText().isEmpty()) {
+			
+		} else {
+		  veri=dao.verificarCI(Integer.parseInt(ventana.getCli_cedula().getText()));
+		if (veri== true) {
+			estado = true;
+		}else {
+			estado = false;
+		}
+	}
+		  return estado;
+	}
 	@SuppressWarnings("static-access")
 	private void registrarCliente() {
 		if (ventana.getCli_nombre().getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Debes Completar el Nombre");
 			ventana.getCli_nombre().requestFocus();
-		}else if (ventana.getCli_cedula().getText().isEmpty() || ventana.getCli_cedula().getText().equals("")) {
+		}else if (ventana.getCli_cedula().getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Debe Ingresar el Numero de Cedula");
 			ventana.getCli_cedula().requestFocus();
 			
@@ -53,28 +69,38 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 			JOptionPane.showMessageDialog(null, "Debes Ingresar la Direccion");
 			ventana.getCli_direccion().requestFocus();
 			
-		}else if (ventana.getCli_telefono().getText().isEmpty() ) {
-			JOptionPane.showMessageDialog(null, "Debes Ingresar el Telefono");
-			ventana.getCli_telefono().requestFocus();
 		} else {
-		cliente=new Cliente();
-		cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
-		cliente.setNombre(ventana.getCli_nombre().getText());
-		cliente.setCedula(Integer.parseInt(ventana.getCli_cedula().getText()));
-		cliente.setRuc(ventana.getCli_ruc().getText());
-		cliente.setDireccion(ventana.getCli_direccion().getText());
-		cliente.setTelefono(Integer.parseInt(ventana.getCli_telefono().getText()));
-		dao=new ClienteDAO();
-        if(modificar==false){
-        	dao.guardar(cliente);
-        	this.ventana.getBtnGuardar().setVisible(false);
-		}else{
-			cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
-			dao.modificarCliente(cliente);
-			JOptionPane.showMessageDialog(null, "El Cliente fue Modificada");
-			this.ventana.getBtnGuardar().setVisible(false);
-		}
-        
+			if (cliente !=null) {
+				cliente=new Cliente();
+				cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
+				cliente.setNombre(ventana.getCli_nombre().getText());
+				cliente.setCedula(Integer.parseInt(ventana.getCli_cedula().getText()));
+				cliente.setRuc(ventana.getCli_ruc().getText());
+				cliente.setDireccion(ventana.getCli_direccion().getText());
+				cliente.setTelefono(ventana.getCli_telefono().getText());
+				dao=new ClienteDAO();
+		        if(modificar==false){
+		        	if (verificar() == true) {
+						
+					}else {
+						dao.guardar(cliente);
+						limpiarCampo();
+						limpiarTabla();
+						listarClientes();
+								
+				}
+				}else{
+					cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
+					dao.modificarCliente(cliente);
+				    limpiarCampo();
+				    limpiarTabla();
+				    listarClientes();
+				}
+	        
+			} else {
+				JOptionPane.showMessageDialog(null, "El Cliente no fue Guardado");
+			}
+			
 		}
 
 	
@@ -85,7 +111,6 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 		cliente=new Cliente();
 		cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
 		dao.eliminar(cliente);
-		JOptionPane.showMessageDialog(null, "El Cliente fue Eliminada"+1);
 		
 	}
 	public void listarClientes(){
@@ -109,7 +134,7 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 			ventana.getCli_cedula().setText(Integer.toString(cliente.getCedula()));
 			ventana.getCli_ruc().setText(cliente.getRuc());
 			ventana.getCli_direccion().setText(cliente.getDireccion());
-			ventana.getCli_telefono().setText(Integer.toString(cliente.getTelefono()));
+			ventana.getCli_telefono().setText(cliente.getTelefono());
 		}
 	private void seleccionarFila() {
 		int row =ventana.getTableCliente().getSelectedRow();
@@ -184,7 +209,7 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 				fila[2]=cliente.get(i).getCedula();
 				modelo.addRow(fila);
 			}
-		
+			
 }
 	/** Empieza el
 	 * 
@@ -193,12 +218,19 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 	
 	public void actionPerformed(ActionEvent e) {
 		
-		if (e.getSource().equals(ventana.getBtnGuardar())) {
-			registrarCliente();
-			limpiarCampo();
-			limpiarTabla();
-			listarClientes();
-			modificar=false;
+		if (e.getSource().equals(ventana.getBtnGuardar())) {	
+			
+			if (ventana.getCli_nombre().getText().isEmpty()) {
+				ventana.getBtnModificar().setVisible(true);
+				
+			} else{
+		
+				ventana.getBtnModificar().setVisible(false);
+			}
+				registrarCliente();
+				desabilitarGuardar();
+			    modificar=false;
+			
 		
 		}
 		
@@ -242,6 +274,7 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 				eliminar();
 				limpiarTabla();
 				listarClientes();
+				limpiarCampo();
 				
 			}
 
@@ -265,12 +298,23 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 			
 		
 		}
+		if (e.getSource().equals(ventana.getBtnGuardar())) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			if (verificar() == true) {
+				
+			}else {
+							
+				registrarCliente();				
+			}
+			modificar=false;
 		
+		}
 		
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 	@Override

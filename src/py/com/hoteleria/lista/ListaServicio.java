@@ -6,9 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -19,13 +17,23 @@ import javax.swing.table.DefaultTableModel;
 import py.com.hoteleria.dao.ServicioDAO;
 import py.com.hoteleria.form.FormDetalle;
 import py.com.hoteleria.model.Servicio;
+import javax.swing.JPanel;
+import java.awt.SystemColor;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class ListaServicio extends JDialog {
 	private JTable table;
 	private JTextField campoBuscar;
 	private JLabel lblNewLabel;
-	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
+	private JPanel panel;
+	private JPanel panel_1;
+	private JButton btnSalir;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -47,12 +55,22 @@ public class ListaServicio extends JDialog {
 	 * Create the dialog.
 	 */
 	public ListaServicio() {
-		setBounds(100, 100, 350, 300);
+		setUndecorated(true);
+		getContentPane().setBackground(SystemColor.activeCaption);
+		setModal(true);
+		setBounds(100, 100, 376, 309);
 		getContentPane().setLayout(null);
 		
+		panel = new JPanel();
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda de Servicio", TitledBorder.LEADING, TitledBorder.TOP, null, SystemColor.window));
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(10, 11, 353, 287);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 331, 219);
-		getContentPane().add(scrollPane);
+		scrollPane.setBounds(10, 22, 331, 219);
+		panel.add(scrollPane);
 		
 		table = new JTable();
 		table.addMouseListener(new MouseAdapter() {
@@ -95,7 +113,14 @@ public class ListaServicio extends JDialog {
 		table.getColumnModel().getColumn(2).setPreferredWidth(60);
 		scrollPane.setViewportView(table);
 		
+		lblNewLabel = new JLabel("Buscar");
+		lblNewLabel.setBounds(10, 245, 83, 30);
+		panel.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
+		
 		campoBuscar = new JTextField();
+		campoBuscar.setBounds(89, 252, 153, 24);
+		panel.add(campoBuscar);
 		campoBuscar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -107,14 +132,23 @@ public class ListaServicio extends JDialog {
 				}
 			}
 		});
-		campoBuscar.setBounds(88, 230, 243, 24);
-		getContentPane().add(campoBuscar);
 		campoBuscar.setColumns(10);
 		
-		lblNewLabel = new JLabel("Buscar");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
-		lblNewLabel.setBounds(10, 224, 83, 30);
-		getContentPane().add(lblNewLabel);
+		btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnSalir.setBounds(252, 252, 89, 23);
+		panel.add(btnSalir);
+		
+		panel_1 = new JPanel();
+		panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBounds(0, 0, 376, 309);
+		getContentPane().add(panel_1);
         
 		listarServicio();
 	
@@ -155,7 +189,7 @@ public class ListaServicio extends JDialog {
 			for (int i = 0; i <servicio.size(); i++) {					
 				fila[0]=servicio.get(i).getCodigo();
 				fila[1]=servicio.get(i).getDescripcionServicio();
-				fila[2]=formatea.format(servicio.get(i).getMonto());
+				fila[2]=servicio.get(i).getMonto();
 				modelo.addRow(fila);
 			}
 		

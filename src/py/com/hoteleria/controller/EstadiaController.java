@@ -1,18 +1,22 @@
 package py.com.hoteleria.controller;
-
+/**
+ * @author Hermenegil2
+ */
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
 import py.com.hoteleria.dao.DetalleDAO;
 import py.com.hoteleria.dao.EstadiaDAO;
 import py.com.hoteleria.dao.HabitacionDAO;
@@ -21,8 +25,11 @@ import py.com.hoteleria.form.FormEstadia;
 import py.com.hoteleria.lista.ListaCliente;
 import py.com.hoteleria.lista.ListaHabitacion;
 import py.com.hoteleria.model.Detalle;
+import py.com.hoteleria.model.Deuda;
 import py.com.hoteleria.model.Estadia;
 import py.com.hoteleria.model.Habitacion;
+
+
 
 public class EstadiaController implements ActionListener,KeyListener,MouseListener{
 	private EstadiaDAO dao;
@@ -30,7 +37,9 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	private Estadia estadia;
 	private boolean modificar;
 	Double total=0.0;
-	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
+//	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
+	
+	
 	public EstadiaController(FormEstadia v){
 		this.ventana=v;
 		ventana.getBtnGuardar().addActionListener(this);
@@ -39,17 +48,22 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		ventana.getTableEstadia().addKeyListener(this);
 		ventana.getBtnModificar().addActionListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
-		ventana.getBtnCerrar().addActionListener(this);
+		ventana.getBtnSalir().addActionListener(this);
 		ventana.getTableEstadia().addMouseListener(this);
 		ventana.getBtnDetalle().addActionListener(this);
-		ventana.getBtnCierre_1().addActionListener(this);
+		ventana.getBtnCierre_C().addActionListener(this);
 		ventana.getBtnActivo().addActionListener(this);
 		ventana.getBtnInactivo().addActionListener(this);
 		ventana.getBtnTodos().addActionListener(this);
-		ventana.getBtnAtras().addActionListener(this);
 		ventana.getBtnNuevo().addActionListener(this);
 		ventana.getBtnCierre().addActionListener(this);
-		
+		ventana.getBtnCancelar().addActionListener(this);
+		ventana.getEmontoDescue().addKeyListener(this);
+		ventana.getEmontoTotal().addKeyListener(this);
+		ventana.getEBuscarEstadia().addKeyListener(this);
+		ventana.getBtnGuardar().addKeyListener(this);
+		ventana.getBtnCierre_C().addKeyListener(this);
+		ventana.getTableDetalle().addKeyListener(this);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -61,32 +75,84 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 			JOptionPane.showMessageDialog(null, "Debes Ingresar el Codigo del Habitacion");
 			ventana.getECodHab().requestFocus();
 		} else{
+			if (estadia !=null) {
+				estadia=new Estadia();
+				 estadia.getCliente().setCodigo(Integer.parseInt(ventana.getECodCliente().getText()));
+				 estadia.getHabitacion().setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
+				 estadia.setObservacion(ventana.getEobservacion().getText());
+				dao=new EstadiaDAO();
+		        if(modificar==false){
+		        	dao.guardar(estadia);
+		        	actualizarHabitacionTrue();
+					limpiarCampo();
+					limpiarTabla();
+					listarEstadia();
+					limpiarCampo();
+		   
+				}else {
+					estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
+					dao.modificarEstadia(estadia);
+				}
+					
+		        		
+				} else {
+					JOptionPane.showMessageDialog(null, "La Estadia no fue Guardada");
+				}
+			}
+		
+	}
+	@SuppressWarnings({ "static-access", "deprecation" })
+	private void actualizar() {
+		if (ventana.getEfechaSalida().getText().isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "La fecha de Salida no debe quedar Vacio");
+		} else if(ventana.getEmonto().getText().isEmpty()){
+			JOptionPane.showMessageDialog(null, "El monto no debe quedar Vacio");
+		} else if (ventana.getEmontoTotal().getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "El  Monto Total no debe quedar Vacio");
+		} else{
 		estadia=new Estadia();
-		 estadia.setFechaEntrada(ventana.getEfechaEntrada().getDate());
-		 estadia.getCliente().setCodigo(Integer.parseInt(ventana.getECodCliente().getText()));
-		 estadia.getHabitacion().setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
-		 estadia.setMonto(Double.parseDouble(ventana.getEmonto().getText()));
-		 estadia.setObservacion(ventana.getEobservacion().getText());
+		Deuda deuda=new Deuda();
+		estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
+		estadia.setMonto(Double.parseDouble(ventana.getEmonto().getText()));
+		if(ventana.getEmontoDescue().getText().isEmpty()){
+            estadia.setDescuento(0.0);
+		} else {
+			estadia.setDescuento(Double.parseDouble(ventana.getEmontoDescue().getText()));
+			
+		}
+		estadia.setFechaSalida(new Date(ventana.getEfechaSalida().getText()));
+		estadia.setEstado(false);
+		deuda.getEstadia().setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
+		deuda.getCliente().setCodigo(Integer.parseInt(ventana.getECodCliente().getText()));
+		deuda.setMontoDeuda(Double.parseDouble(ventana.getEmontoTotal().getText()));
 		dao=new EstadiaDAO();
-        if(modificar==false){
-        	dao.guardar(estadia);
-   
-		}else{
-			estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
-			dao.modificarEstadia(estadia);
+		dao.actualizarEstadia(estadia,deuda);
+		actualizarHabitacionFalse();
+		limpiarTabla();
+		listarEstadia();
+		limpiarCampoEstadia();
+		limpiarDetalle();
+		
+	}
 		}
-        
-		}
+	
+	
+	
+	
+	@SuppressWarnings("static-access")
+	private void actualizarHabitacionTrue() {
+		Habitacion habita=new Habitacion();
+		habita.setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
+		HabitacionDAO hab=new HabitacionDAO();
+		hab.actualizarHabitacion(habita);
+
 	}
 	@SuppressWarnings("static-access")
-	private void actualizar() {
-		estadia=new Estadia();
-		estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
-		estadia.setFechaSalida(ventana.getEfechaSalida().getDate());
-		estadia.setDescuento(Double.parseDouble(ventana.getEmontoDescue().getText()));
-		estadia.setEstado(false);
-		dao=new EstadiaDAO();
-		dao.actualizarEstadia(estadia);
+	private void actualizarHabitacionFalse() {
+		Habitacion habita=new Habitacion();
+		habita.setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
+		HabitacionDAO hab=new HabitacionDAO();
+		hab.actualizarHabitacionFalse(habita);
 
 	}
 
@@ -99,7 +165,8 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	    	fila[1]=lista.get(i).getCliente().getNombre();
 	    	fila[2]=lista.get(i).getHabitacion().getCodigo();
 	    	fila[3]=lista.get(i).getFechaEntrada();
-	    	fila[4]=formatea.format(lista.get(i).getHabitacion().getMontoDia());
+	    	fila[4]=lista.get(i).getHabitacion().getMontoDia();
+	    	fila[5]=lista.get(i).isEstado();
 
 	    	modelo.addRow(fila);
 	    }
@@ -113,7 +180,8 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	    	fila[1]=lista.get(i).getCliente().getNombre();
 	    	fila[2]=lista.get(i).getHabitacion().getCodigo();
 	    	fila[3]=lista.get(i).getFechaEntrada();
-	    	fila[4]=formatea.format(lista.get(i).getHabitacion().getMontoDia());
+	    	fila[4]=lista.get(i).getHabitacion().getMontoDia();
+	    	fila[5]=lista.get(i).isEstado();
 
 	    	modelo.addRow(fila);
 	    }
@@ -127,8 +195,8 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	    	fila[1]=lista.get(i).getCliente().getNombre();
 	    	fila[2]=lista.get(i).getHabitacion().getCodigo();
 	    	fila[3]=lista.get(i).getFechaEntrada();
-	    	fila[4]=formatea.format(lista.get(i).getHabitacion().getMontoDia());
-
+	    	fila[4]=lista.get(i).getHabitacion().getMontoDia();
+	    	fila[5]=lista.get(i).isEstado();
 	    	modelo.addRow(fila);
 	    }
 		}
@@ -143,7 +211,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	    	fila[0]=lista.get(i).getCodigo();
 	    	fila[1]=lista.get(i).getEstadia().getCodigo();
 	    	fila[2]=lista.get(i).getServicio().getCodigo();
-//	    	fila[3]=lista.get(i).getServicio().getDescripcionServicio();
+	    	fila[3]=lista.get(i).getServicio().getDescripcionServicio();
 	    	fila[4]=lista.get(i).getMonto();
 	    	modelo.addRow(fila);
 	    }
@@ -151,10 +219,12 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	
 	@SuppressWarnings("static-access")
 	public void eliminar(){
-		estadia=new Estadia();
-		estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
-		dao.eliminar(estadia);
-		
+		if (estadia !=null) {
+			estadia=new Estadia();
+			estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
+			dao.eliminar(estadia);
+			actualizarHabitacionFalse();
+		}
 	}
 	public void limpiarTabla() {
 		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableEstadia().getModel();
@@ -164,7 +234,15 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		}
 		
 	}
-	public void limpiarTablaDetalle() {
+	public void limpiarDetalle() {
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableDetalle().getModel();
+		for (int i = 0; i < ventana.getTableDetalle().getRowCount(); i++) {
+			modelo.removeRow(i);
+			i-=1;
+		}
+		
+	}
+	private void limpiarTablaDetalle() {
 		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableDetalle().getModel();
 		for (int i = 0; i < ventana.getTableDetalle().getRowCount(); i++) {
 			modelo.removeRow(i);
@@ -177,16 +255,22 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		dao=new EstadiaDAO();
 		estadia=dao.estadiaId(id);
 			ventana.getEcodigo().setText(Integer.toString(estadia.getCodigo()));
-			ventana.getEfechaEntrada().setDate(estadia.getFechaEntrada());
 			ventana.getECodCliente().setText(Integer.toString(estadia.getCliente().getCodigo()));
 			ventana.getECodHab().setText(Integer.toString(estadia.getHabitacion().getCodigo()));
-			ventana.getEfechaSalida().setDate(estadia.getFechaSalida());
-			ventana.getEmonto().setText(Double.toString(estadia.getMonto()));
-			ventana.getEmontoDescue().setText(Double.toString(estadia.getDescuento()));
+			ventana.getEfecha().setText(estadia.getFecha());
 			ventana.getEobservacion().setText(estadia.getObservacion());
 			
 			
+			
 		}
+
+	
+	private void pasarCampoTablaDetalleServicio() {
+		Integer fila = this.ventana.getTableEstadia().getSelectedRow();
+		String dato = String.valueOf(this.ventana.getTableEstadia().getValueAt( fila,0));
+        FormDetalle.DtNroEstadia.setText(dato);
+	}
+	
 	private void seleccionarFila() {
 		int row =ventana.getTableEstadia().getSelectedRow();
 		Integer id=Integer.parseInt(ventana.getTableEstadia().getValueAt(row, 0).toString().trim());
@@ -196,6 +280,13 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		totalServicio();
 		pasarCampoTabl();
 		desabilitar();
+		ventana.getBtnGuardar().setVisible(false);
+		ventana.getBtnCierre_C().setVisible(false);
+		ventana.getEfechaSalida().setText("");
+		ventana.getEmonto().setText("");
+		ventana.getEmontoDescue().setText("");
+		ventana.getEmontoTotal().setText("");
+	
 		
 	}
 	
@@ -204,6 +295,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		String dato = String.valueOf(this.ventana.getTableEstadia().getValueAt( fila,1));
         FormEstadia.Enombre.setText(dato);
 	}
+	
 	public void totalServicio(){
 		double total=0;
     	for (int i = 0; i < ventana.getTableDetalle().getRowCount(); i++) {
@@ -221,7 +313,6 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
    
 }
 	private void desabilitar() {
-		this.ventana.getEfechaEntrada().setEnabled(false);
 		FormEstadia.Enombre.setEditable(false);
 		this.ventana.getECodHab().setEditable(false);
 		this.ventana.getEmonto().setEditable(false);
@@ -235,23 +326,18 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	
 	
 	private void habilitarCampo() {
-		this.ventana.getEfechaEntrada().setEnabled(true);
 		this.ventana.getECodCliente().setEnabled(true);
 		this.ventana.getECodHab().setEnabled(true);
-		this.ventana.getEmonto().setEnabled(true);
 		this.ventana.getEmontoDescue().setEnabled(true);
 		this.ventana.getEobservacion().setEditable(true);
-		this.ventana.getEmonto().setEditable(true);
 		
 
 	}
 	private void limpiarCampo() {
-		this.ventana.getEfechaEntrada().setDate(null);
+		FormEstadia.ECodCliente.setText("");
 		FormEstadia.Enombre.setText("");
 		this.ventana.getECodHab().setText("");
-		this.ventana.getEcosto().setText("");
 		this.ventana.getEobservacion().setText("");
-		this.ventana.getEfechaSalida().setDate(null);
 		this.ventana.getEmonto().setText("");
 		this.ventana.getEmontoDescue().setText("");
 		this.ventana.getBtnBuscarCliente().setVisible(true);
@@ -260,42 +346,54 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 
 	}
 	private void habilitarCampoCierre() {
-		this.ventana.getBtnCierre_1().setVisible(true);
+		this.ventana.getBtnCierre_C().setVisible(true);
 		this.ventana.getEfechaSalida().setEnabled(true);
-		this.ventana.getEcosto().setEditable(true);
-		this.ventana.getEservicio().setEditable(true);
 		this.ventana.getEmontoDescue().setEditable(true);
-		this.ventana.getEtotal().setEditable(true);
 
 	}
-	@SuppressWarnings("static-access")
-	private void actuazilarHab(){
-	Habitacion habita=new Habitacion();
-    
-	HabitacionDAO hab=new HabitacionDAO();
-	habita.setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
-	hab.actualizarHabitacion(habita);
 	
-	}
-	@SuppressWarnings("static-access")
-	private void actuazilarHabi(){
-	Habitacion habita=new Habitacion();
-    
-	HabitacionDAO hab=new HabitacionDAO();
-	habita.setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
-	hab.actualizarHabitacionFalse(habita);
-	
-	}
-	
-	private void sumaMontoServicio() {
-		double monto=0,servicio=0;
-		monto=Double.parseDouble(ventana.getEmonto().getText());
-		servicio=Double.parseDouble((ventana.getEtotalServicio().getText()));
-		
-		total=monto+servicio;
-		
-		ventana.getEtotal().setText(total.toString());
+	private void fecha() {  
+		 Calendar c=Calendar.getInstance();
+		 String dia = Integer.toString(c.get(Calendar.DATE));
+		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
+		 String ano =Integer.toString(c.get(Calendar.YEAR));
+		 ventana.getEfechaSalida().setText(dia+"/"+mes+"/"+ano); 
+ }
+	private void fechaEstadia() {  
+		 Calendar c=Calendar.getInstance();
+		 String dia = Integer.toString(c.get(Calendar.DATE));
+		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
+		 String ano =Integer.toString(c.get(Calendar.YEAR));
+		 ventana.getEfecha().setText(dia+"/"+mes+"/"+ano); 
 
+		
+		
+		}
+	private void obtenerUltimoId() {
+		estadia=EstadiaDAO.obtenerUltimoId();
+		ventana.getEcodigo().setText(Integer.toString(estadia.getCodigo()));
+	}
+	
+	private void diferenciaDia(){
+		
+		final long MILLSECS_PER_DAY = 24 * 60 * 60 * 1000; //Milisegundos al día 
+		java.util.Date hoy = new Date(); //Fecha de hoy 
+		String fechaInicio=ventana.getEfecha().getText();
+		String[] aFechaIng = fechaInicio.split("/");
+        Integer dia = Integer.parseInt(aFechaIng[0]);
+        Integer mes = Integer.parseInt(aFechaIng[1]);
+        Integer año = Integer.parseInt(aFechaIng[2]);
+		Calendar calendar = new GregorianCalendar(año,mes-1,dia); 
+		java.sql.Date fecha = new java.sql.Date(calendar.getTimeInMillis());
+
+		long diferencia = ( hoy.getTime() - fecha.getTime() )/MILLSECS_PER_DAY; 
+		
+		Integer fila = this.ventana.getTableEstadia().getSelectedRow();
+		String dato =String.valueOf(this.ventana.getTableEstadia().getValueAt( fila,4));
+		Double datos=Double.parseDouble(dato);
+	    Double servicio=Double.parseDouble(ventana.getEtotalServicio().getText());
+		total=((diferencia+1)*datos)+servicio;
+        ventana.getEmonto().setText(total.toString());
 	}
 	
 	public void ocultarBoton() {
@@ -303,25 +401,171 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		this.ventana.getBtnModificar().setVisible(false);
 		this.ventana.getBtnEliminar().setVisible(false);
 		this.ventana.getBtnCierre().setVisible(false);
-		this.ventana.getBtnCierre_1().setVisible(false);
+		this.ventana.getBtnCierre_C().setVisible(false);
+		this.ventana.getBtnBuscarCliente().setVisible(false);
+		this.ventana.getBtnBuscarHabitacion().setVisible(false);
 	}
+	
+	
+	
+	private void restaMontoDescuentos() {
+		Double monto=Double.parseDouble(ventana.getEmonto().getText());
+		
+		if (ventana.getEmontoDescue().getText().isEmpty()) {
+			 Double descuento=0.0;
+			 total=monto-descuento;
+			 ventana.getEmontoTotal().setText(total.toString());
+		} else {
+			
+        Double descuento=Double.parseDouble(ventana.getEmontoDescue().getText());
+        total=monto-descuento;
+        ventana.getEmontoTotal().setText(total.toString());
+	}
+	}
+	
+
+	private void listarNombre(){
+		ArrayList<Estadia> estadia=new ArrayList<Estadia>();
+		String nombre=ventana.getEBuscarEstadia().getText();
+		estadia=EstadiaDAO.buscarEstadia(nombre);
+		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableEstadia().getModel();
+			Object[] fila=new Object[modelo.getColumnCount()];
+			for (int i = 0; i <estadia.size(); i++) {					
+				fila[0]=estadia.get(i).getCodigo();
+				fila[1]=estadia.get(i).getCliente().getNombre();
+				fila[2]=estadia.get(i).getHabitacion().getCodigo();
+				fila[3]=estadia.get(i).getFechaEntrada();
+				fila[4]=estadia.get(i).getHabitacion().getMontoDia();
+				modelo.addRow(fila);
+			}
+			
+}
+	private void diferenciarDescuento() {
+		double monto=0.0,desc=0.0;
+		if (ventana.getEmontoDescue().getText().isEmpty()) {
+			monto=Double.parseDouble(ventana.getEmonto().getText());
+			desc=0.0;
+			
+			if (desc >= monto) {
+				JOptionPane.showMessageDialog(null, "El descuento no debe ser Mayor al Monto.");
+				ventana.getEmontoDescue().requestFocus();
+				ventana.getEmontoTotal().setText("");
+			} else {
+				ventana.getBtnCierre_C().requestFocus();
+		
+			}
+		} else {
+			monto=Double.parseDouble(ventana.getEmonto().getText());
+			desc=Double.parseDouble(ventana.getEmontoDescue().getText());
+			if (desc >= monto) {
+				JOptionPane.showMessageDialog(null, "El descuento no debe ser Mayor al Monto.");
+				ventana.getEmontoDescue().requestFocus();
+				ventana.getEmontoTotal().setText("");
+			} else {
+				ventana.getBtnCierre_C().requestFocus();
+		
+			}
+		}
+		
+
+	}
+	/*
+	private void pasarCampoCobranza() {
+		FormCobranza.CcodCliente.setText(FormEstadia.ECodCliente.getText());
+        FormCobranza.CmontoPagado.setText(FormEstadia.EmontoTotal.getText());
+        
+        Calendar c=Calendar.getInstance();
+		 String dia = Integer.toString(c.get(Calendar.DATE));
+		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
+		 String ano =Integer.toString(c.get(Calendar.YEAR));
+		 FormCobranza.Cfecha.setText(dia+"/"+mes+"/"+ano); 
+	}
+	/*
+	@SuppressWarnings("static-access")
+	private void traerNumeroDeuda() {
+		int id=Integer.parseInt(ventana.getEcodigo().getText());
+		dao=new EstadiaDAO();
+		Deuda deuda=new Deuda();
+		deuda=dao.traerNroDeuda(id);
+		FormCobranza.CnroDeuda.setText(Integer.toString(deuda.getCodigo()));
+	}
+	*/
+	private void eliminarDetalleServicio() {
+		Detalle detalle=new Detalle();	
+		Integer fila =ventana.getTableDetalle().getSelectedRow();
+		detalle.setCodigo(Integer.parseInt(ventana.getTableDetalle().getValueAt(fila,0).toString()));
+        DetalleDAO.eliminarServicio(detalle);
+	}
+	public void centrarEstadia() {
+		DefaultTableCellRenderer modelo=new DefaultTableCellRenderer();
+		modelo.setHorizontalAlignment(SwingConstants.CENTER);
+		ventana.getTableEstadia().getColumnModel().getColumn(0).setCellRenderer(modelo);
+		ventana.getTableEstadia().getColumnModel().getColumn(2).setCellRenderer(modelo);
+		ventana.getTableEstadia().getColumnModel().getColumn(3).setCellRenderer(modelo);
+		ventana.getTableEstadia().getColumnModel().getColumn(4).setCellRenderer(modelo);
+		ventana.getTableDetalle().getColumnModel().getColumn(0).setCellRenderer(modelo);
+		ventana.getTableDetalle().getColumnModel().getColumn(1).setCellRenderer(modelo);
+		ventana.getTableDetalle().getColumnModel().getColumn(2).setCellRenderer(modelo);
+		ventana.getTableDetalle().getColumnModel().getColumn(4).setCellRenderer(modelo);
+
+	}
+	
+	private void limpiarCampoEstadia() {
+		ventana.getEcodigo().setText("");
+		ventana.getEfecha().setText("");
+		ventana.getECodCliente().setText("");
+		FormEstadia.Enombre.setText("");
+		ventana.getECodHab().setText("");
+		ventana.getEobservacion().setText("");
+		ventana.getEfechaSalida().setText("");
+		ventana.getEmonto().setText("");
+		ventana.getEmontoDescue().setText("");
+		ventana.getEmontoTotal().setText("");
+		
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
+		if (e.getSource().equals(ventana.getBtnDetalle())) {
+			FormDetalle f=new FormDetalle();
+			f.setLocationRelativeTo(null);
+			f.setVisible(true);
+			pasarCampoTablaDetalleServicio();
+			
+		}
+		
 		if (e.getSource().equals(ventana.getBtnCierre())) {
+	    if (ventana.getEcodigo().getText().isEmpty() && ventana.getEfecha().getText().isEmpty() && ventana.getECodCliente().getText().isEmpty() && ventana.getECodHab().getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "El Campo no debe quedar Vacio");
+		} else {
 			habilitarCampoCierre();
+			fecha();
+		    diferenciaDia();
+			ventana.getEmontoDescue().requestFocus();
+		}
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			limpiarCampo();
 			habilitarCampo();
+			limpiarDetalle();
+			obtenerUltimoId();
+			fechaEstadia();
 			this.ventana.getBtnGuardar().setVisible(true);
 			this.ventana.getBtnBuscarCliente().setEnabled(true);
 			this.ventana.getBtnBuscarHabitacion().setEnabled(true);
+			this.ventana.getEfechaSalida().setEditable(false);
+			this.ventana.getBtnEliminar().setVisible(false);
+			this.ventana.getBtnModificar().setVisible(false);
+			this.ventana.getEtotalServicio().setText("");
 		
 		}
 		
 		if (e.getSource().equals(ventana.getBtnInactivo())) {
 			limpiarTabla();
 			listarEstadiaInactivo();
+			ventana.getBtnEliminar().setVisible(false);
+			ventana.getBtnModificar().setVisible(false);
 		}
 		if (e.getSource().equals(ventana.getBtnTodos())) {
 			limpiarTabla();
@@ -331,16 +575,14 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 			limpiarTabla();
 			listarEstadia();
 		}
-		if (e.getSource().equals(ventana.getBtnCierre_1())) {
+		if (e.getSource().equals(ventana.getBtnCierre_C())) {
 			actualizar();
-			limpiarTabla();
-			listarEstadia();
-			actuazilarHabi();
-			ventana.getEfechaSalida().setEnabled(false);
-			ventana.getEcosto().setEditable(false);
-			ventana.getEservicio().setEditable(false);
-			ventana.getEtotal().setEditable(false);
-			ventana.getEmontoDescue().setEditable(false);
+//			FormCobranza form=new FormCobranza();
+//			form.setLocationRelativeTo(null);
+//			form.setVisible(true);
+//			pasarCampoCobranza();
+			//traerNumeroDeuda();
+			
 		}
 		
 		if (e.getSource().equals(ventana.getBtnBuscarCliente())) {
@@ -356,72 +598,130 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 			f.setVisible(true);
 		}
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
-			actuazilarHab();
 			registrarEstadia();
-			limpiarCampo();
-			limpiarTabla();
-			listarEstadia();
 			modificar=false;
-			
 		}
 		if (e.getSource().equals(ventana.getBtnModificar())) {
+			int row =ventana.getTableEstadia().getSelectedRow();
+			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
+			if (estado==false) {
+				JOptionPane.showMessageDialog(null, "La estadia Cerrada no se puede Modificar");
+			} else{
+			
 			modificar=true;
 			habilitarCampo();
+			this.ventana.getBtnGuardar().setVisible(true);
+			this.ventana.getBtnBuscarCliente().setVisible(true);
+			this.ventana.getBtnBuscarHabitacion().setVisible(true);
+			this.ventana.getBtnBuscarCliente().setEnabled(true);
+			this.ventana.getBtnBuscarHabitacion().setEnabled(true);
+			
 		}
-		if (e.getSource().equals(ventana.getBtnEliminar())) {
-			if (JOptionPane.showConfirmDialog(new JDialog(),
-					"¿Seguro que Quieres Eliminar","Salir",
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-				eliminar();
-				limpiarTabla();
-				listarEstadia();
-				
 			}
-
+		
+		if (e.getSource().equals(ventana.getBtnEliminar())) {
+			int row =ventana.getTableEstadia().getSelectedRow();
+			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
+			if (estado==false) {
+				JOptionPane.showMessageDialog(null, "La estadia Cerrada no se puede eliminar");
+			} else{
+			
+			if (ventana.getEtotalServicio().getText().equals("0.0")) {
+				if (JOptionPane.showConfirmDialog(new JDialog(),
+						"¿Seguro que Quieres Eliminar","Salir",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+					eliminar();
+					limpiarTabla();
+					listarEstadia();
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "No se puede Eliminar. Elimina primero Detalle.");
+			}
+			
 		}
-		if (e.getSource().equals(ventana.getBtnCerrar())) {
+		}
+		if (e.getSource().equals(ventana.getBtnSalir())) {
 			this.ventana.dispose();
 		}
-		if (e.getSource().equals(ventana.getBtnDetalle())) {
-			FormDetalle f=new FormDetalle();
-			f.setLocationRelativeTo(null);
-			f.setVisible(true);
-		}
+		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getSource().equals(ventana.getTableEstadia())){
+		if (e.getSource().equals(ventana.getTableDetalle())) {
+			int row =ventana.getTableEstadia().getSelectedRow();
+			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
+			if (estado==false) {
+				JOptionPane.showMessageDialog(null, "La estadia Cerrada no se puede eliminar");
+			} else{
+			
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
-				seleccionarFila();
-                this.ventana.getBtnCierre().setVisible(true);
-			    
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Eliminar","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				
+					eliminarDetalleServicio();
+					seleccionarFila();
+				}
 			}
+			}
+		}
+		if (e.getSource().equals(ventana.getBtnCierre_C())) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			actualizar();
+			limpiarCampoEstadia();
+//			pasarCampoCobranza();
+			//traerNumeroDeuda();
+			limpiarDetalle();
+		}
+		}
+		
+		if(e.getSource().equals(ventana.getEBuscarEstadia())){
+			limpiarTabla();
+			listarNombre();
 			
 		
 		}
+		if(e.getSource().equals(ventana.getEmontoDescue())){
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+				restaMontoDescuentos();
+				diferenciarDescuento();
+			}
 		
+		}
 		
-	}
+		if (e.getSource().equals(ventana.getBtnGuardar())) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			registrarEstadia();
+			modificar=false;
+		}
+	}}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
+	public void keyTyped(KeyEvent e) {
+		if (e.getSource().equals(ventana.getEmontoDescue())) {
+			char car=e.getKeyChar();
+			if(  ventana.getEmontoDescue().getText().length()>=10)e.consume();
+			if((car<'0' || car>'9') ) e.consume();
+		}
 		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount()==2) {
+		if (e.getClickCount()==1) {
 			for (@SuppressWarnings("unused") int i : ventana.getTableEstadia().getSelectedRows()) {
 		     seleccionarFila();
-		    sumaMontoServicio();
+		     this.ventana.getBtnCierre().setVisible(true);
+		     this.ventana.getBtnModificar().setVisible(true);
+		     this.ventana.getBtnEliminar().setVisible(true);
+		     ventana.getBtnCierre().requestFocus();
 			}
 	            
 			
@@ -431,23 +731,25 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (e.getClickCount()==2) {
+		if (e.getClickCount()==1) {
 			for (@SuppressWarnings("unused") int i : ventana.getTableEstadia().getSelectedRows()) {
-		    
 		     seleccionarFila();
-		     sumaMontoServicio();
+		     this.ventana.getBtnCierre().setVisible(true);
+		     this.ventana.getBtnModificar().setVisible(true);
+		     this.ventana.getBtnEliminar().setVisible(true);
+		     ventana.getBtnCierre().requestFocus();
 			}
 	            
 			
@@ -458,7 +760,6 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 

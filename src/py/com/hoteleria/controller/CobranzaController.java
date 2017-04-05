@@ -6,12 +6,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import py.com.hoteleria.abm.FormCliente;
 import py.com.hoteleria.dao.CobranzaDAO;
 import py.com.hoteleria.form.FormCobranza;
-import py.com.hoteleria.form.FormDeuda;
 import py.com.hoteleria.model.Cobranza;
 
 
@@ -24,11 +23,12 @@ public class CobranzaController implements ActionListener,KeyListener {
 	
 	public CobranzaController(FormCobranza v){
 		this.ventana=v;
-		ventana.getBtnBuscarCliente().addActionListener(this);
 		ventana.getBtnBuscarDueda().addActionListener(this);
 		ventana.getBtnGuardar().addActionListener(this);
+		ventana.getBtnSalir().addActionListener(this);
+		
 	}
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "deprecation" })
 	private void registrarCobranza() {
 		if (ventana.getCnroDeuda().getText().isEmpty()) {
 			JOptionPane.showMessageDialog(null, "Debes Ingresar el Codigo de la deuda");
@@ -38,7 +38,7 @@ public class CobranzaController implements ActionListener,KeyListener {
 			ventana.getCcodCliente().requestFocus();
 		} else{
 		 cobranza=new Cobranza();
-		 cobranza.setFecha(ventana.getCfecha().getDate());
+		 cobranza.setFecha(new Date(ventana.getCfecha().getText()));
 		 cobranza.setMontoPagado(Double.parseDouble(ventana.getCmontoPagado().getText()));
 		 cobranza.getDeuda().setCodigo(Integer.parseInt(ventana.getCnroDeuda().getText()));
 		 cobranza.getCliente().setCodigo(Integer.parseInt(ventana.getCcodCliente().getText()));
@@ -54,6 +54,11 @@ public class CobranzaController implements ActionListener,KeyListener {
         
 		}
 	}
+	public void obtenerUltimoId() {
+		cobranza=CobranzaDAO.obtenerUltimoId();
+		ventana.getCcodigo().setText(Integer.toString(cobranza.getCodigo()));
+
+	}
 	
 	public void listarCobranza(){
 		DefaultTableModel modelo=(DefaultTableModel) ventana.getCtablaCobranza().getModel();
@@ -61,9 +66,8 @@ public class CobranzaController implements ActionListener,KeyListener {
 		Object[] fila=new Object[modelo.getColumnCount()];
 	    for (int i = 0; i < lista.size(); i++) {
 	    	fila[0]=lista.get(i).getCodigo();
-	    	fila[1]=lista.get(i).getFecha();
+	    	fila[1]=lista.get(i).getCliente().getNombre();
 	    	fila[2]=formatea.format(lista.get(i).getDeuda().getMontoDeuda());
-	    	fila[4]=lista.get(i).getCliente().getNombre();
 	    	fila[3]=formatea.format(lista.get(i).getMontoPagado());
 	    	modelo.addRow(fila);
 	    }
@@ -81,7 +85,7 @@ public class CobranzaController implements ActionListener,KeyListener {
 		dao=new CobranzaDAO();
 		cobranza=dao.CobranzaId(id);
 			ventana.getCcodigo().setText(Integer.toString(cobranza.getCodigo()));
-			ventana.getCfecha().setDate(cobranza.getFecha());
+			
 			ventana.getCmontoPagado().setText(Double.toString(cobranza.getMontoPagado()));
 			ventana.getCnroDeuda().setText(Integer.toString(cobranza.getDeuda().getCodigo()));
 			ventana.getCcodCliente().setText(Integer.toString(cobranza.getCliente().getCodigo()));
@@ -94,19 +98,16 @@ public class CobranzaController implements ActionListener,KeyListener {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(ventana.getBtnBuscarCliente())) {
-			FormCliente f=new FormCliente();
-			f.setVisible(true);
+		if (e.getSource().equals(ventana.getBtnSalir())) {
+		ventana.dispose();
 		}
-		if (e.getSource().equals(ventana.getBtnBuscarDueda())) {
-			FormDeuda f=new FormDeuda();
-			f.setVisible(true);
-		}
+		
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
 			registrarCobranza();
 			limpiarTabla();
 			listarCobranza();
 		}
+		
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {

@@ -35,6 +35,7 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 		ventana.getBtnEliminar().addActionListener(this);
 		ventana.getBtnBuscar().addActionListener(this);
 		ventana.getHab_monto().addKeyListener(this);
+		ventana.getBtnGuardar().addKeyListener(this);
 	}
 	private void obtenerUltimoId() {
 		habita=HabitacionDAO.obtenerUltimoId();
@@ -69,19 +70,26 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 			JOptionPane.showMessageDialog(null, "Debe Ingresar el Monto");
 			ventana.getHab_monto().requestFocus();
 		} else{
-		habita=new Habitacion();
-		habita.setDescripcionHabitacion(ventana.getHab_descripcion().getText());
-		habita.setMontoDia(Double.parseDouble(ventana.getHab_monto().getText()));
-		habita.setObservacion(ventana.getHab_observacion().getText());
-		dao=new HabitacionDAO();
-        if(modificar==false){
-        	dao.guardar(habita);
-        	
-		}else{
-			habita.setCodigo(Integer.parseInt(ventana.getHab_codigo().getText()));
-			dao.modificarHabitacion(habita);
+		if (habita !=null) {
+			habita=new Habitacion();
+			habita.setDescripcionHabitacion(ventana.getHab_descripcion().getText());
+			habita.setMontoDia(Double.parseDouble(ventana.getHab_monto().getText()));
+			habita.setObservacion(ventana.getHab_observacion().getText());
+			dao=new HabitacionDAO();
+	        if(modificar==false){
+	        	dao.guardar(habita);
+	        	limpiarTabla();
+				listarDescrip();
+				limpiarCampo();
+			}else{
+				habita.setCodigo(Integer.parseInt(ventana.getHab_codigo().getText()));
+				dao.modificarHabitacion(habita);
+			}
+			} else {
+				JOptionPane.showMessageDialog(null, "La habitacion no fue carga");
+			}
 		}
-		}
+		
 	}
 
 	@SuppressWarnings("static-access")
@@ -121,7 +129,7 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 		this.ventana.dispose();
 		
 	}
-	private void listarDescrip(){
+	public void listarDescrip(){
 		ArrayList<Habitacion>habitacion=new ArrayList<Habitacion>();
         String descripcion=ventana.getHab_buscar().getText();
 		habitacion=HabitacionDAO.listarHabitacionDes(descripcion);
@@ -134,19 +142,6 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 			modelo.addRow(fila);
 		}
 	}
-	public void listarHabitacion(){
-		DefaultTableModel modelo=(DefaultTableModel) ventana.getTableHabitacion().getModel();
-		ArrayList<Habitacion>lista=HabitacionDAO.listarHabitacion();
-		Object[] fila=new Object[modelo.getColumnCount()];
-	    for (int i = 0; i < lista.size(); i++) {
-	    	fila[0]=lista.get(i).getCodigo();
-	    	fila[1]=lista.get(i).getDescripcionHabitacion();
-	    	fila[2]=formatea.format(lista.get(i).getMontoDia());
-	    	modelo.addRow(fila);
-	    }
-		}
-	
-	
 	
 	public void ocultarBoton() {
 		ventana.getBtnGuardar().setVisible(false);
@@ -164,11 +159,8 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
 			registrarCliente();
-			limpiarTabla();
-			listarHabitacion();
-			limpiarCampo();
 			modificar=false;
-			ventana.getBtnGuardar().setVisible(false);
+			ventana.getBtnGuardar().setVisible(true);
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			habilitarCampo();
@@ -180,7 +172,7 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 		}
 		if (e.getSource().equals(ventana.getBtnModificar())) {
 			limpiarTabla();
-			listarHabitacion();
+			listarDescrip();
 			modificar=true;
 			habilitarCampo();
 			ventana.getBtnGuardar().setVisible(true);
@@ -205,7 +197,7 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 				eliminar();
 				limpiarTabla();
 				limpiarCampo();
-				listarHabitacion();
+				listarDescrip();
 				
 				
 				
@@ -230,7 +222,13 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 			
 		
 		}
-		
+		if (e.getSource().equals(ventana.getBtnGuardar())) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			registrarCliente();
+			modificar=false;
+			ventana.getBtnGuardar().setVisible(true);
+		}
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {

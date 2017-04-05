@@ -9,19 +9,18 @@ import py.com.hoteleria.util.Conexion;
 
 public class ClienteDAO {
 	public void guardar(Cliente cliente){
-		String sql="INSERT INTO cliente(cli_codigo,cli_nombre, cli_cedula, cli_ruc, cli_direcc, cli_telefo) VALUES ("+cliente.getCodigo()+",'"+cliente.getNombre()+"',"+cliente.getCedula()+",'"+cliente.getRuc()+"','"+cliente.getDireccion()+"',"+cliente.getTelefono()+");";
+		String sql="INSERT INTO cliente(cli_codigo,cli_nombre, cli_cedula, cli_ruc, cli_direcc, cli_telefo) VALUES ("+cliente.getCodigo()+",'"+cliente.getNombre()+"',"+cliente.getCedula()+",'"+cliente.getRuc()+"','"+cliente.getDireccion()+"','"+cliente.getTelefono()+"');";
 		System.out.println(sql);
 		Conexion.abrirConexion();
 		try {
 			Conexion.sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "La Sentencia no Fue Ejecutada."+e.getMessage());
 			e.printStackTrace();
 		}
 		Conexion.cerrarConexion();
 }
 	public static void modificarCliente(Cliente cliente){
- 	   String sql="UPDATE cliente SET cli_nombre='"+cliente.getNombre()+"', cli_cedula="+cliente.getCedula()+", cli_ruc='"+cliente.getRuc()+"', cli_direcc='"+cliente.getDireccion()+"', cli_telefo="+cliente.getTelefono()+" WHERE cli_codigo="+cliente.getCodigo()+";";
+ 	   String sql="UPDATE cliente SET cli_nombre='"+cliente.getNombre()+"', cli_cedula="+cliente.getCedula()+", cli_ruc='"+cliente.getRuc()+"', cli_direcc='"+cliente.getDireccion()+"', cli_telefo='"+cliente.getTelefono()+"' WHERE cli_codigo="+cliente.getCodigo()+";";
  	   Conexion.abrirConexion();
  	   try {
 			Conexion.sentencia.executeUpdate(sql);
@@ -46,7 +45,7 @@ public class ClienteDAO {
 	public static ArrayList<Cliente> listarCliente(){
 		 ArrayList<Cliente> lista=new ArrayList<>();
 		 Cliente cliente=null;
-	  	   String sql="SELECT * FROM cliente ORDER BY cli_codigo DESC;";
+	  	   String sql="SELECT * FROM cliente ORDER BY cli_codigo ASC;";
 	  	   
 	  	  Conexion.abrirConexion();
 	  	  try {
@@ -58,7 +57,7 @@ public class ClienteDAO {
 					cliente.setCedula(rs.getInt("cli_cedula"));
 					cliente.setRuc(rs.getString("cli_ruc"));
 					cliente.setDireccion(rs.getString("cli_direcc"));
-					cliente.setTelefono(rs.getInt("cli_telefo"));
+					cliente.setTelefono(rs.getString("cli_telefo"));
 					lista.add(cliente);
 				}
 				
@@ -86,7 +85,7 @@ public class ClienteDAO {
 					cliente.setCedula(rs.getInt("cli_cedula"));
 					cliente.setRuc(rs.getString("cli_ruc"));
 					cliente.setDireccion(rs.getString("cli_direcc"));
-					cliente.setTelefono(rs.getInt("cli_telefo"));
+					cliente.setTelefono(rs.getString("cli_telefo"));
 					
 					
 					
@@ -142,5 +141,80 @@ public class ClienteDAO {
 		Conexion.cerrarConexion();
 		return cliente;
 	}
+	
+	public static  ArrayList<Cliente> informeClienteCodigo(int desde, int hasta){
+		ArrayList<Cliente> lista=new ArrayList<Cliente>();
+		Cliente cliente=null;
+		String sql="Select * from cliente where cli_codigo  BETWEEN "+desde+" AND "+hasta+"";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				  cliente=new Cliente();
+				  cliente.setCodigo(rs.getInt("cli_codigo"));
+				  cliente.setNombre(rs.getString("cli_nombre"));
+				  cliente.setCedula(rs.getInt("cli_cedula"));
+				  cliente.setRuc(rs.getString("cli_ruc"));
+					cliente.setDireccion(rs.getString("cli_direcc"));
+					cliente.setTelefono(rs.getString("cli_telefo"));
+				  lista.add(cliente);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
+	}
+	public static  ArrayList<Cliente> informeClienteNombre(String desde, String hasta){
+		ArrayList<Cliente> lista=new ArrayList<Cliente>();
+		Cliente cliente=null;
+		String sql="Select * from cliente where cli_nombre  BETWEEN '"+desde+"' AND '"+hasta+"' ORDER BY cli_nombre ASC";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				  cliente=new Cliente();
+				  cliente.setCodigo(rs.getInt("cli_codigo"));
+				  cliente.setNombre(rs.getString("cli_nombre"));
+				  cliente.setCedula(rs.getInt("cli_cedula"));
+				  cliente.setRuc(rs.getString("cli_ruc"));
+					cliente.setDireccion(rs.getString("cli_direcc"));
+					cliente.setTelefono(rs.getString("cli_telefo"));
+				  lista.add(cliente);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
+	}
+	
+	public boolean verificarCI(int ci){
+		boolean isExits =false;
+		String sql="SELECT cli_cedula FROM cliente WHERE cli_cedula="+ci+" ";
+		Conexion.abrirConexion();
+		
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			if (rs.next()) {
+				isExits = true;
+				JOptionPane.showMessageDialog(null, "Ya existe el Cliente con con ese N° de Cedula..");
+			} else {
+				isExits = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error al obtener cliente: "+e.getMessage());
+		}
+	       Conexion.cerrarConexion();
+		return isExits;
+	}
+
 	
 }

@@ -13,16 +13,27 @@ import javax.swing.JLabel;
 import py.com.hoteleria.dao.ClienteDAO;
 import py.com.hoteleria.form.FormEstadia;
 import py.com.hoteleria.model.Cliente;
+
 import java.awt.Font;
 import java.util.ArrayList;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JPanel;
+import java.awt.SystemColor;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class ListaCliente extends JDialog {
 	private JTable table;
 	private JTextField campoBuscar;
 	private JLabel lblNewLabel;
+	private JPanel panel;
+	private JPanel panel_1;
+	
 
 	/**
 	 * Launch the application.
@@ -45,11 +56,14 @@ public class ListaCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public ListaCliente() {
-		setBounds(100, 100, 350, 300);
+		setUndecorated(true);
+		getContentPane().setBackground(SystemColor.activeCaption);
+		setModal(true);
+		setBounds(100, 100, 401, 310);
 		getContentPane().setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 331, 219);
+		scrollPane.setBounds(22, 33, 352, 212);
 		getContentPane().add(scrollPane);
 		
 		table = new JTable();
@@ -58,28 +72,26 @@ public class ListaCliente extends JDialog {
 			public void mousePressed(MouseEvent e) {
 				if (e.getClickCount()==2) {
 					for (@SuppressWarnings("unused") int i :getTable().getSelectedRows()) {
-				       pasarCampoTabl();
-				       dispose();
-					}
+						pasarCampoTabl();
+						dispose();
 			            
 					
 				}
 				
-					
+				}
 				
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount()==2) {
 					for (@SuppressWarnings("unused") int i : getTable().getSelectedRows()) {
-				       pasarCampoTabl();
-				       dispose();
+					  pasarCampoTabl();
+					   dispose();
 					}
-			            
-					
 				}
-				
 			}
+			
+	
 		});
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -93,7 +105,31 @@ public class ListaCliente extends JDialog {
 		table.getColumnModel().getColumn(2).setPreferredWidth(60);
 		scrollPane.setViewportView(table);
 		
+		panel = new JPanel();
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Busqueda de Clientes", TitledBorder.LEADING, TitledBorder.TOP, null, SystemColor.window));
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(10, 11, 377, 288);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnSalir.setBounds(278, 254, 89, 23);
+		panel.add(btnSalir);
+		
+		lblNewLabel = new JLabel("Buscar");
+		lblNewLabel.setBounds(10, 246, 83, 30);
+		panel.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
+		
 		campoBuscar = new JTextField();
+		campoBuscar.setBounds(88, 253, 180, 24);
+		panel.add(campoBuscar);
 		campoBuscar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -105,14 +141,13 @@ public class ListaCliente extends JDialog {
 				}
 			}
 		});
-		campoBuscar.setBounds(88, 230, 243, 24);
-		getContentPane().add(campoBuscar);
 		campoBuscar.setColumns(10);
 		
-		lblNewLabel = new JLabel("Buscar");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
-		lblNewLabel.setBounds(10, 224, 83, 30);
-		getContentPane().add(lblNewLabel);
+		panel_1 = new JPanel();
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
+		panel_1.setBounds(0, 0, 401, 310);
+		getContentPane().add(panel_1);
         
 		listarNombreApellido();
 	
@@ -172,5 +207,6 @@ public class ListaCliente extends JDialog {
 		String nombre=String.valueOf(this.getTable().getValueAt(fila, 1));
         FormEstadia.ECodCliente.setText(dato);
         FormEstadia.Enombre.setText(nombre);
+        
 	}
 }

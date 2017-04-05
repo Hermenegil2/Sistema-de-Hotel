@@ -6,7 +6,7 @@ public class Cliente {
 	private int cedula;
 	private String ruc;
 	private String direccion;
-	private int telefono;
+	private String telefono;
 	
 	public Cliente() {
 		super();
@@ -15,7 +15,7 @@ public class Cliente {
 		cedula=0;
 		ruc="";
 		direccion="";
-		telefono=0;
+		telefono="";
 	}
 
 	public int getCodigo() {
@@ -58,13 +58,22 @@ public class Cliente {
 		this.direccion = direccion;
 	}
 
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
+
+	@Override
+	public String toString() {
+		return "Cliente [codigo=" + codigo + ", nombre=" + nombre + ", cedula="
+				+ cedula + ", ruc=" + ruc + ", direccion=" + direccion
+				+ ", telefono=" + telefono + "]";
+	}
+
+
 	
 	
 }

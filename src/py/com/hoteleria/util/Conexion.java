@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class Conexion {
 		private static String Driver="org.postgresql.Driver";
-		private static String RUTA="jdbc:postgresql://localhost:5432/hoteleria_bd";
+		private static String RUTA="jdbc:postgresql://localhost:5432/hotel_can";
 		private static String USER="postgres";
 		private static String PASSWORD="herme66288";
 		public static Statement sentencia;
@@ -45,4 +45,6 @@ public class Conexion {
 				}
 			}
 		}
+		
+		
 }

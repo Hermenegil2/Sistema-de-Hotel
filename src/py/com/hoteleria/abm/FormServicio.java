@@ -1,7 +1,6 @@
 package py.com.hoteleria.abm;
-/**
- * @author Hermenegildo
- */
+
+
 import java.awt.EventQueue;
 
 import javax.swing.JDialog;
@@ -11,17 +10,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
-
 import java.awt.Color;
-
 import javax.swing.JLabel;
-
 import java.awt.Font;
 import java.awt.SystemColor;
-
-import javax.swing.border.BevelBorder;
-
 import py.com.hoteleria.controller.ServicioController;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class FormServicio extends JDialog {
@@ -37,6 +34,9 @@ public class FormServicio extends JDialog {
 	private JButton btnModificar;
 	private JButton btnNuevo;
 	private JButton btnBuscar;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JPanel panel_3;
 
 	/**
 	 * Launch the application.
@@ -59,102 +59,144 @@ public class FormServicio extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormServicio() {
-		setBounds(100, 100,853, 500);
+		setTitle("Formulario de Servicio");
+		getContentPane().setBackground(SystemColor.activeCaption);
+		setBounds(100, 100,712, 550);
 		getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(new BevelBorder(BevelBorder.RAISED, SystemColor.activeCaption, SystemColor.activeCaption, SystemColor.activeCaption, SystemColor.activeCaption));
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Servicio", TitledBorder.LEADING, TitledBorder.TOP, null, SystemColor.window));
 		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 44, 837, 417);
+		panel.setBounds(10, 11, 678, 489);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblCodigo = new JLabel("Codigo:");
-		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblCodigo.setBounds(86, 26, 67, 28);
-		panel.add(lblCodigo);
-		
-		ser_codigo = new JTextField();
-		ser_codigo.setEditable(false);
-		ser_codigo.setFont(new Font("Tahoma", Font.BOLD, 20));
-		ser_codigo.setBounds(218, 27, 174, 30);
-		panel.add(ser_codigo);
-		ser_codigo.setColumns(10);
-		
-		JLabel lblNombre = new JLabel("Descripcion del");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNombre.setBounds(86, 68, 144, 14);
-		panel.add(lblNombre);
+		panel_1 = new JPanel();
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBorder(new TitledBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Formulario", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_1.setBounds(10, 21, 654, 118);
+		panel.add(panel_1);
+		panel_1.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(218, 68, 174, 46);
-		panel.add(scrollPane_1);
+		scrollPane_1.setBounds(142, 59, 174, 46);
+		panel_1.add(scrollPane_1);
 		
 		ser_descri = new JTextField();
+		ser_descri.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					ser_monto.requestFocus();
+				}
+			}
+		});
 		ser_descri.setEditable(false);
 		ser_descri.setFont(new Font("Tahoma", Font.BOLD, 13));
 		scrollPane_1.setViewportView(ser_descri);
 		ser_descri.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("Monto:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel.setBounds(454, 31, 108, 14);
-		panel.add(lblNewLabel);
+		ser_codigo = new JTextField();
+		ser_codigo.setBounds(142, 18, 174, 30);
+		panel_1.add(ser_codigo);
+		ser_codigo.setEditable(false);
+		ser_codigo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		ser_codigo.setColumns(10);
 		
-		ser_monto = new JTextField();
-		ser_monto.setEditable(false);
-		ser_monto.setFont(new Font("Tahoma", Font.BOLD, 13));
-		ser_monto.setBounds(558, 26, 191, 30);
-		panel.add(ser_monto);
-		ser_monto.setColumns(10);
-		
-		JLabel lblRuc = new JLabel("Observacion:");
-		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblRuc.setBounds(454, 88, 108, 14);
-		panel.add(lblRuc);
-		
-		ser_observacion = new JTextField();
-		ser_observacion.setEditable(false);
-		ser_observacion.setFont(new Font("Tahoma", Font.BOLD, 13));
-		ser_observacion.setBounds(558, 75, 191, 44);
-		panel.add(ser_observacion);
-		ser_observacion.setColumns(10);
+		JLabel lblNombre = new JLabel("Descripcion del");
+		lblNombre.setBounds(10, 59, 144, 14);
+		panel_1.add(lblNombre);
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblServicio = new JLabel("Servicio:");
+		lblServicio.setBounds(10, 72, 144, 14);
+		panel_1.add(lblServicio);
 		lblServicio.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblServicio.setBounds(86, 81, 144, 14);
-		panel.add(lblServicio);
+		
+		JLabel lblCodigo = new JLabel("Codigo:");
+		lblCodigo.setBounds(10, 17, 67, 28);
+		panel_1.add(lblCodigo);
+		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		ser_observacion = new JTextField();
+		ser_observacion.setBounds(444, 67, 191, 44);
+		panel_1.add(ser_observacion);
+		ser_observacion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					btnGuardar.requestFocus();
+				}
+			}
+		});
+		ser_observacion.setEditable(false);
+		ser_observacion.setFont(new Font("Tahoma", Font.BOLD, 13));
+		ser_observacion.setColumns(10);
+		
+		JLabel lblRuc = new JLabel("Observacion:");
+		lblRuc.setBounds(340, 80, 108, 14);
+		panel_1.add(lblRuc);
+		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		ser_monto = new JTextField();
+		ser_monto.setBounds(444, 18, 191, 30);
+		panel_1.add(ser_monto);
+		ser_monto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					ser_observacion.requestFocus();
+				}
+			}
+		});
+		ser_monto.setEditable(false);
+		ser_monto.setFont(new Font("Tahoma", Font.BOLD, 13));
+		ser_monto.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Monto:");
+		lblNewLabel.setBounds(340, 23, 108, 14);
+		panel_1.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Area de Botones", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_2.setBackground(SystemColor.activeCaption);
+		panel_2.setBounds(10, 150, 654, 65);
+		panel.add(panel_2);
 		
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(103, 132, 95, 29);
-		panel.add(btnNuevo);
+		panel_2.add(btnNuevo);
 		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		btnGuardar = new JButton("Guardar");
-		btnGuardar.setBounds(229, 132, 103, 29);
-		panel.add(btnGuardar);
+		panel_2.add(btnGuardar);
 		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(363, 132, 119, 29);
-		panel.add(btnModificar);
+		panel_2.add(btnModificar);
 		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(513, 132, 115, 29);
-		panel.add(btnEliminar);
+		panel_2.add(btnEliminar);
 		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
 		btnSalir = new JButton("Salir");
-		btnSalir.setBounds(659, 132, 76, 29);
-		panel.add(btnSalir);
+		panel_2.add(btnSalir);
 		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
+		panel_3 = new JPanel();
+		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Area de Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_3.setBackground(SystemColor.activeCaption);
+		panel_3.setBounds(10, 228, 654, 250);
+		panel.add(panel_3);
+		panel_3.setLayout(null);
+		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(71, 227, 678, 179);
-		panel.add(scrollPane);
+		scrollPane.setBounds(10, 61, 634, 178);
+		panel_3.add(scrollPane);
 		
 		tableServicio = new JTable();
+		tableServicio.setToolTipText("Preciona Enter para modificar o para eliminar.");
 		tableServicio.setBackground(Color.WHITE);
 		tableServicio.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -177,26 +219,15 @@ public class FormServicio extends JDialog {
 		scrollPane.setViewportView(tableServicio);
 		
 		ser_buscar = new JTextField();
+		ser_buscar.setBounds(193, 21, 197, 29);
+		panel_3.add(ser_buscar);
 		ser_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		ser_buscar.setBounds(259, 184, 197, 29);
-		panel.add(ser_buscar);
 		ser_buscar.setColumns(10);
 		
 		btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(401, 20, 95, 28);
+		panel_3.add(btnBuscar);
 		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscar.setBounds(467, 187, 95, 28);
-		panel.add(btnBuscar);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(SystemColor.activeCaption);
-		panel_1.setBounds(0, 0, 837, 43);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblNewLabel_1 = new JLabel("Servicio");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
-		lblNewLabel_1.setBounds(364, 11, 108, 32);
-		panel_1.add(lblNewLabel_1);
 		
 		ServicioController controlador=new ServicioController(this);
 		controlador.listarServicios();

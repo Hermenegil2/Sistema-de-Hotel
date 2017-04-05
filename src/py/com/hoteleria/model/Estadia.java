@@ -12,6 +12,7 @@ public class Estadia {
 	private double descuento;
 	private String observacion;
 	private boolean estado;
+	private String fecha;
 	
 	public Estadia() {
 		super();
@@ -19,11 +20,20 @@ public class Estadia {
 		fechaEntrada=new Date();
 		cliente=new Cliente();
 		habitacion=new Habitacion();
-		fechaSalida=new Date();
+//		fechaSalida=new Date();
 		monto=0.0;
 		descuento=0.0;
 		observacion="";
 		estado=true;
+		fecha="";
+	}
+
+	public String getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(String fecha) {
+		this.fecha = fecha;
 	}
 
 	public Cliente getCliente() {

@@ -12,16 +12,16 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JLabel;
 import py.com.hoteleria.controller.ClienteController;
-
-
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.SystemColor;
-
-import javax.swing.border.BevelBorder;
-import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
+import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 
 public class FormCliente extends JDialog {
@@ -42,9 +42,7 @@ public class FormCliente extends JDialog {
 	private JButton btnEliminar;
 	private JButton btnModificar;
 	private JButton btnNuevo;
-	private JPanel panel_1;
 	private JButton btnBuscar;
-	private JLabel lblCliente;
 	private JPanel panel_2;
 	
 
@@ -69,109 +67,46 @@ public class FormCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormCliente() {
+		getContentPane().setBackground(SystemColor.activeCaption);
 		setTitle("Formulario de Cliente");
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\formulariocliente.png"));
 		setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 16));
-		setBounds(100, 100,870, 519);
+		setBounds(100, 100,766, 587);
 		getContentPane().setLayout(null);
 		
-		panel_1 = new JPanel();
-		panel_1.setBorder(UIManager.getBorder("CheckBox.border"));
-		panel_1.setBackground(SystemColor.activeCaption);
-		panel_1.setBounds(0, 0, 854, 42);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
-		
-		lblCliente = new JLabel("Cliente");
-		lblCliente.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
-		lblCliente.setBounds(378, 11, 97, 31);
-		panel_1.add(lblCliente);
-		
 		JPanel panel = new JPanel();
-		panel.setBorder(new BevelBorder(BevelBorder.RAISED, SystemColor.activeCaption, SystemColor.activeCaption, SystemColor.activeCaption, SystemColor.activeCaption));
+		panel.setBorder(new TitledBorder(null, "Clientes", TitledBorder.LEADING, TitledBorder.TOP, null, SystemColor.inactiveCaptionText));
 		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 42, 854, 438);
+		panel.setBounds(10, 11, 726, 528);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(95, 266, 664, 161);
-		panel.add(scrollPane);
-		
-		tableCliente = new JTable();
-		tableCliente.setForeground(new Color(0, 0, 0));
-		tableCliente.setBackground(Color.WHITE);
-		tableCliente.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Codigo", "Nombre y Apellido", "Nro. Cedula"
-			}
-		));
-		tableCliente.getColumnModel().getColumn(1).setPreferredWidth(168);
-		scrollPane.setViewportView(tableCliente);
-		
-		clie_buscar = new JTextField();
-		clie_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		clie_buscar.setBounds(242, 217, 190, 29);
-		panel.add(clie_buscar);
-		clie_buscar.setColumns(10);
-		
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscar.setBounds(442, 215, 113, 29);
-		panel.add(btnBuscar);
-		
 		panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Formulario", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(255, 255, 255)));
 		panel_2.setBackground(SystemColor.activeCaption);
-		panel_2.setBounds(95, 12, 664, 192);
+		panel_2.setBounds(10, 22, 707, 153);
 		panel.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblCodigo = new JLabel("Codigo:");
-		lblCodigo.setBounds(0, 11, 67, 28);
+		lblCodigo.setBounds(29, 27, 67, 28);
 		panel_2.add(lblCodigo);
 		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblNombre = new JLabel("Nombre y Apellido:");
-		lblNombre.setBounds(0, 50, 144, 24);
+		lblNombre.setBounds(29, 66, 144, 24);
 		panel_2.add(lblNombre);
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblNewLabel = new JLabel("Nro. Cedula:");
-		lblNewLabel.setBounds(0, 95, 108, 14);
+		lblNewLabel.setBounds(29, 111, 108, 14);
 		panel_2.add(lblNewLabel);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(27, 146, 95, 29);
-		panel_2.add(btnNuevo);
-		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(289, 146, 110, 29);
-		panel_2.add(btnModificar);
-		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(426, 146, 105, 29);
-		panel_2.add(btnEliminar);
-		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.setBounds(149, 146, 113, 29);
-		panel_2.add(btnGuardar);
-		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnSalir = new JButton("Salir");
-		btnSalir.setBounds(558, 146, 75, 29);
-		panel_2.add(btnSalir);
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
 		cli_telefono = new JTextField();
+		cli_telefono.setBounds(455, 112, 228, 30);
 		cli_telefono.setEditable(false);
 		cli_telefono.setFont(new Font("Tahoma", Font.BOLD, 13));
-		cli_telefono.setBounds(426, 89, 228, 30);
 		panel_2.add(cli_telefono);
 		cli_telefono.addKeyListener(new KeyAdapter() {
 			
@@ -184,9 +119,9 @@ public class FormCliente extends JDialog {
 		cli_telefono.setColumns(10);
 		
 		cli_direccion = new JTextField();
+		cli_direccion.setBounds(455, 70, 228, 30);
 		cli_direccion.setEditable(false);
 		cli_direccion.setFont(new Font("Tahoma", Font.BOLD, 13));
-		cli_direccion.setBounds(426, 49, 228, 30);
 		panel_2.add(cli_direccion);
 		cli_direccion.addKeyListener(new KeyAdapter() {
 			
@@ -199,9 +134,9 @@ public class FormCliente extends JDialog {
 		cli_direccion.setColumns(10);
 		
 		cli_ruc = new JTextField();
+		cli_ruc.setBounds(455, 28, 228, 30);
 		cli_ruc.setEditable(false);
 		cli_ruc.setFont(new Font("Tahoma", Font.BOLD, 13));
-		cli_ruc.setBounds(426, 12, 228, 30);
 		panel_2.add(cli_ruc);
 		cli_ruc.addKeyListener(new KeyAdapter() {
 			
@@ -214,16 +149,16 @@ public class FormCliente extends JDialog {
 		cli_ruc.setColumns(10);
 		
 		cli_codigo = new JTextField();
+		cli_codigo.setBounds(173, 24, 181, 30);
 		cli_codigo.setEnabled(false);
 		cli_codigo.setFont(new Font("Tahoma", Font.BOLD, 20));
-		cli_codigo.setBounds(144, 12, 181, 30);
 		panel_2.add(cli_codigo);
 		cli_codigo.setColumns(10);
 		
 		cli_nombre = new JTextField();
+		cli_nombre.setBounds(173, 64, 183, 30);
 		cli_nombre.setEditable(false);
 		cli_nombre.setFont(new Font("Tahoma", Font.BOLD, 13));
-		cli_nombre.setBounds(142, 53, 183, 30);
 		panel_2.add(cli_nombre);
 		cli_nombre.addKeyListener(new KeyAdapter() {
 			
@@ -236,9 +171,9 @@ public class FormCliente extends JDialog {
 		cli_nombre.setColumns(10);
 		
 		cli_cedula = new JTextField();
+		cli_cedula.setBounds(173, 110, 183, 30);
 		cli_cedula.setEditable(false);
 		cli_cedula.setFont(new Font("Tahoma", Font.BOLD, 13));
-		cli_cedula.setBounds(142, 94, 183, 30);
 		panel_2.add(cli_cedula);
 		cli_cedula.addKeyListener(new KeyAdapter() {
 			
@@ -251,19 +186,90 @@ public class FormCliente extends JDialog {
 		cli_cedula.setColumns(10);
 		
 		JLabel lblTelefono = new JLabel("Telefono:");
-		lblTelefono.setBounds(349, 95, 86, 14);
+		lblTelefono.setBounds(378, 111, 86, 14);
 		panel_2.add(lblTelefono);
 		lblTelefono.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblDireccion = new JLabel("Direccion:");
-		lblDireccion.setBounds(349, 55, 67, 14);
+		lblDireccion.setBounds(378, 71, 67, 14);
 		panel_2.add(lblDireccion);
 		lblDireccion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
 		JLabel lblRuc = new JLabel("RUC:");
-		lblRuc.setBounds(349, 17, 46, 14);
+		lblRuc.setBounds(378, 33, 46, 14);
 		panel_2.add(lblRuc);
 		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(SystemColor.activeCaption);
+		panel_3.setBorder(new TitledBorder(null, "Area de Botones", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_3.setBounds(10, 174, 707, 73);
+		panel.add(panel_3);
+		
+		btnNuevo = new JButton("Nuevo");
+		panel_3.add(btnNuevo);
+		btnNuevo.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Agregar_Cliente.png"));
+		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnGuardar = new JButton("Guardar");
+		panel_3.add(btnGuardar);
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnModificar = new JButton("Modificar");
+		btnModificar.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\editar.png"));
+		panel_3.add(btnModificar);
+		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Remove-Male-User-icon.png"));
+		panel_3.add(btnEliminar);
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnSalir = new JButton("Salir");
+		panel_3.add(btnSalir);
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		JPanel panel_4 = new JPanel();
+		panel_4.setBackground(SystemColor.activeCaption);
+		panel_4.setBorder(new TitledBorder(null, "Area de Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		panel_4.setBounds(10, 249, 707, 268);
+		panel.add(panel_4);
+		panel_4.setLayout(null);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(363, 23, 190, 55);
+		panel_4.add(btnBuscar);
+		btnBuscar.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\icono\\Buscar-Clientes.png"));
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		clie_buscar = new JTextField();
+		clie_buscar.setBounds(163, 22, 190, 56);
+		panel_4.add(clie_buscar);
+		clie_buscar.setHorizontalAlignment(SwingConstants.CENTER);
+		clie_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		clie_buscar.setColumns(10);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 86, 685, 171);
+		panel_4.add(scrollPane);
+		
+		tableCliente = new JTable();
+		tableCliente.setToolTipText("Preciona Entrer para modificar o para eliminar.");
+		tableCliente.setForeground(new Color(0, 0, 0));
+		tableCliente.setBackground(Color.WHITE);
+		tableCliente.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Codigo", "Nombre y Apellido", "Nro. Cedula"
+			}
+		));
+		tableCliente.getColumnModel().getColumn(1).setPreferredWidth(168);
+		scrollPane.setViewportView(tableCliente);
 
 		
 		ClienteController controlador=new ClienteController(this);

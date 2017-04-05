@@ -30,7 +30,7 @@ public class ServicioDAO {
 		}
  	   Conexion.cerrarConexion();
  }
-	public static void eliminar(Servicio servicio){
+	public static void eliminarServicio(Servicio servicio){
 		String sql="DELETE FROM servicio WHERE ser_codigo="+servicio.getCodigo()+"";
 	    System.out.println(sql);
 	    Conexion.abrirConexion();
@@ -132,5 +132,54 @@ public class ServicioDAO {
 		}
 		Conexion.cerrarConexion();
 		return servicio;
+	}
+	
+	public static  ArrayList<Servicio> listadoServicioCodigo(int desde, int hasta){
+		ArrayList<Servicio> lista=new ArrayList<Servicio>();
+		Servicio servicio=null;
+		String sql="Select * from servicio where ser_codigo  BETWEEN "+desde+" AND "+hasta+"";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				 servicio=new Servicio();
+				 servicio.setCodigo(rs.getInt("ser_codigo"));
+				 servicio.setDescripcionServicio(rs.getString("ser_descri"));
+				 servicio.setMonto(rs.getDouble("ser_monto"));
+				 servicio.setObservacion(rs.getString("ser_obse"));
+				  lista.add(servicio);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
+	}
+	public static  ArrayList<Servicio> listadoServicio(String desde, String hasta){
+		ArrayList<Servicio> lista=new ArrayList<Servicio>();
+		Servicio servicio=null;
+		String sql="Select * from servicio where ser_descri  BETWEEN '"+desde+"' AND '"+hasta+"'";
+		System.out.println(sql);
+		Conexion.abrirConexion();
+		try {
+			ResultSet rs=Conexion.sentencia.executeQuery(sql);
+			  while(rs.next()){
+				 servicio=new Servicio();
+				 servicio.setCodigo(rs.getInt("ser_codigo"));
+				 servicio.setDescripcionServicio(rs.getString("ser_descri"));
+				 servicio.setMonto(rs.getDouble("ser_monto"));
+				 servicio.setObservacion(rs.getString("ser_obse"));
+				  lista.add(servicio);
+				  
+			  }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Conexion.cerrarConexion();
+		return lista;
 	}
 }

@@ -13,15 +13,20 @@ import py.com.hoteleria.lista.ListaServicio;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class FormDetalle extends JDialog {
-	private JTextField Dtcodigo;
-	private JTextField DtNroEstadia;
+	public static JTextField DtNroEstadia;
 	public static JTextField DtCodServicio;
 	public static JTextField DtMonto;
 	private JButton btnGuardar;
 	private JButton button;
+	private JButton btnSalir;
+	private final JPanel panel = new JPanel();
 
 	/**
 	 * Launch the application.
@@ -44,51 +49,71 @@ public class FormDetalle extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormDetalle() {
+		setUndecorated(true);
 		getContentPane().setBackground(SystemColor.activeCaption);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 361, 218);
 		getContentPane().setLayout(null);
-		
-		JLabel lblCodigo = new JLabel("Codigo:");
-		lblCodigo.setBounds(6, 6, 55, 16);
-		getContentPane().add(lblCodigo);
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBorder(new TitledBorder(null, "Detalle", TitledBorder.LEADING, TitledBorder.TOP, null, SystemColor.window));
+		panel.setBounds(10, 13, 341, 195);
+		getContentPane().add(panel);
+		panel.setLayout(null);
 		
 		JLabel lblNroEstadia = new JLabel("Nro. Estadia:");
-		lblNroEstadia.setBounds(6, 34, 81, 16);
-		getContentPane().add(lblNroEstadia);
-		
-		JLabel lblCodigoServicio = new JLabel("Codigo Servicio:");
-		lblCodigoServicio.setBounds(6, 68, 95, 16);
-		getContentPane().add(lblCodigoServicio);
-		
-		JLabel lblMonto = new JLabel("Monto:");
-		lblMonto.setBounds(6, 106, 55, 16);
-		getContentPane().add(lblMonto);
-		
-		Dtcodigo = new JTextField();
-		Dtcodigo.setBounds(103, 0, 166, 28);
-		getContentPane().add(Dtcodigo);
-		Dtcodigo.setColumns(10);
+		lblNroEstadia.setBounds(10, 32, 89, 16);
+		panel.add(lblNroEstadia);
+		lblNroEstadia.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		DtNroEstadia = new JTextField();
+		DtNroEstadia.setBounds(123, 28, 203, 28);
+		panel.add(DtNroEstadia);
+		DtNroEstadia.setEditable(false);
+		DtNroEstadia.setFont(new Font("SansSerif", Font.BOLD, 14));
 		DtNroEstadia.setColumns(10);
-		DtNroEstadia.setBounds(103, 28, 166, 28);
-		getContentPane().add(DtNroEstadia);
+		
+		JLabel lblCodigoServicio = new JLabel("Servicio:");
+		lblCodigoServicio.setBounds(10, 64, 89, 16);
+		panel.add(lblCodigoServicio);
+		lblCodigoServicio.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		DtCodServicio = new JTextField();
+		DtCodServicio.setBounds(123, 59, 179, 28);
+		panel.add(DtCodServicio);
+		DtCodServicio.setFont(new Font("SansSerif", Font.BOLD, 14));
+		DtCodServicio.setEditable(false);
 		DtCodServicio.setColumns(10);
-		DtCodServicio.setBounds(103, 62, 144, 28);
-		getContentPane().add(DtCodServicio);
+		
+		JLabel lblMonto = new JLabel("Monto:");
+		lblMonto.setBounds(10, 98, 89, 16);
+		panel.add(lblMonto);
+		lblMonto.setFont(new Font("Tahoma", Font.BOLD, 14));
 		
 		DtMonto = new JTextField();
+		DtMonto.setBounds(123, 93, 203, 28);
+		panel.add(DtMonto);
+		DtMonto.setFont(new Font("SansSerif", Font.BOLD, 14));
+		DtMonto.setEditable(false);
 		DtMonto.setColumns(10);
-		DtMonto.setBounds(103, 100, 166, 28);
-		getContentPane().add(DtMonto);
-		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.setBounds(103, 153, 90, 28);
-		getContentPane().add(btnGuardar);
 		
 		button = new JButton("Guardar");
+		button.setBounds(303, 59, 23, 28);
+		panel.add(button);
+		
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.setBounds(21, 142, 123, 28);
+		panel.add(btnGuardar);
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		btnSalir = new JButton("Salir");
+		btnSalir.setBounds(179, 142, 133, 28);
+		panel.add(btnSalir);
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBorder(UIManager.getBorder("TitledBorder.border"));
+		panel_1.setBounds(0, 0, 361, 218);
+		getContentPane().add(panel_1);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ListaServicio l=new ListaServicio();
@@ -96,8 +121,6 @@ public class FormDetalle extends JDialog {
 				l.setVisible(true);
 			}
 		});
-		button.setBounds(247, 62, 23, 28);
-		getContentPane().add(button);
 		
 		@SuppressWarnings("unused")
 		DetalleController controlador=new DetalleController(this);
@@ -105,35 +128,36 @@ public class FormDetalle extends JDialog {
 
 	}
 
-	public JTextField getDtcodigo() {
-		return Dtcodigo;
+	public JButton getBtnSalir() {
+		return btnSalir;
 	}
 
-	public void setDtcodigo(JTextField dtcodigo) {
-		Dtcodigo = dtcodigo;
+	public void setBtnSalir(JButton btnSalir) {
+		this.btnSalir = btnSalir;
 	}
 
-	public JTextField getDtNroEstadia() {
+
+	public static JTextField getDtNroEstadia() {
 		return DtNroEstadia;
 	}
 
-	public void setDtNroEstadia(JTextField dtNroEstadia) {
+	public static void setDtNroEstadia(JTextField dtNroEstadia) {
 		DtNroEstadia = dtNroEstadia;
 	}
 
-	public JTextField getDtCodServicio() {
+	public static JTextField getDtCodServicio() {
 		return DtCodServicio;
 	}
 
-	public void setDtCodServicio(JTextField dtCodServicio) {
+	public static void setDtCodServicio(JTextField dtCodServicio) {
 		DtCodServicio = dtCodServicio;
 	}
 
-	public JTextField getDtMonto() {
+	public static JTextField getDtMonto() {
 		return DtMonto;
 	}
 
-	public void setDtMonto(JTextField dtMonto) {
+	public static void setDtMonto(JTextField dtMonto) {
 		DtMonto = dtMonto;
 	}
 
@@ -144,5 +168,4 @@ public class FormDetalle extends JDialog {
 	public void setBtnGuardar(JButton btnGuardar) {
 		this.btnGuardar = btnGuardar;
 	}
-
 }

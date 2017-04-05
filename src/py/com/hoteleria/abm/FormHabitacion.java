@@ -1,9 +1,5 @@
 package py.com.hoteleria.abm;
-/**
- * @author Hermenegildo
- */
 import java.awt.EventQueue;
-
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,6 +12,10 @@ import py.com.hoteleria.controller.HabitacionController;
 import java.awt.Font;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import javax.swing.border.TitledBorder;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class FormHabitacion extends JDialog {
@@ -31,6 +31,8 @@ public class FormHabitacion extends JDialog {
 	private JTable tableHabitacion;
 	private JTextField hab_observacion;
 	private JButton btnBuscar;
+	private JPanel panel_2;
+	private JPanel panel_3;
 
 	/**
 	 * Launch the application.
@@ -53,85 +55,158 @@ public class FormHabitacion extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormHabitacion() {
+		getContentPane().setBackground(SystemColor.activeCaption);
 		setTitle("Formulario Habitacion");
-		setBounds(100, 100,822, 500);
+		setBounds(100, 100,744, 550);
 		getContentPane().setLayout(null);
 		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Habitacion", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(255, 255, 255)));
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBounds(10, 11, 708, 489);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
 		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Formulario", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel.setBounds(10, 21, 685, 122);
+		panel_1.add(panel);
 		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 44, 806, 417);
-		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JLabel lblCodigo = new JLabel("Codigo:");
+		lblCodigo.setBounds(23, 25, 67, 28);
 		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblCodigo.setBounds(99, 24, 67, 28);
 		panel.add(lblCodigo);
 		
 		hab_codigo = new JTextField();
+		hab_codigo.setBounds(152, 25, 181, 30);
 		hab_codigo.setEditable(false);
 		hab_codigo.setFont(new Font("Tahoma", Font.BOLD, 20));
-		hab_codigo.setBounds(221, 25, 181, 30);
 		panel.add(hab_codigo);
 		hab_codigo.setColumns(10);
 		
 		JLabel lblNombre = new JLabel("Descripcion de la \r\n\r");
+		lblNombre.setBounds(23, 64, 119, 28);
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNombre.setBounds(99, 63, 119, 28);
 		panel.add(lblNombre);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(221, 66, 181, 46);
+		scrollPane_1.setBounds(152, 66, 181, 46);
 		panel.add(scrollPane_1);
 		
 		hab_descripcion = new JTextField();
+		hab_descripcion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					hab_monto.requestFocus();
+				}
+			}
+		});
 		hab_descripcion.setEditable(false);
 		hab_descripcion.setFont(new Font("Tahoma", Font.BOLD, 13));
 		scrollPane_1.setViewportView(hab_descripcion);
 		hab_descripcion.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("Monto por Dia:");
+		lblNewLabel.setBounds(343, 31, 108, 14);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel.setBounds(412, 30, 108, 14);
 		panel.add(lblNewLabel);
 		
 		hab_monto = new JTextField();
+		hab_monto.setBounds(475, 25, 183, 30);
+		hab_monto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					hab_observacion.requestFocus();
+				}
+			}
+		});
 		hab_monto.setEditable(false);
 		hab_monto.setFont(new Font("Tahoma", Font.BOLD, 13));
-		hab_monto.setBounds(544, 24, 183, 30);
 		panel.add(hab_monto);
 		hab_monto.setColumns(10);
 		
 		JLabel lblRuc = new JLabel("Observacion:");
+		lblRuc.setBounds(348, 78, 119, 14);
 		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblRuc.setBounds(417, 77, 119, 14);
 		panel.add(lblRuc);
 		
 		JLabel lblHabitacion = new JLabel("Habitacion:");
+		lblHabitacion.setBounds(23, 82, 119, 28);
 		lblHabitacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblHabitacion.setBounds(99, 81, 119, 28);
 		panel.add(lblHabitacion);
 		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.setBounds(235, 123, 107, 29);
-		panel.add(btnGuardar);
-		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(475, 70, 185, 39);
+		panel.add(scrollPane_2);
 		
-		btnSalir = new JButton("Salir");
-		btnSalir.setBounds(643, 123, 79, 29);
-		panel.add(btnSalir);
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		hab_observacion = new JTextField();
+		hab_observacion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					btnGuardar.requestFocus();
+				}
+			}
+		});
+		hab_observacion.setEditable(false);
+		hab_observacion.setFont(new Font("Tahoma", Font.BOLD, 13));
+		scrollPane_2.setViewportView(hab_observacion);
+		hab_observacion.setColumns(10);
+		
+		panel_2 = new JPanel();
+		panel_2.setBackground(SystemColor.activeCaption);
+		panel_2.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Area de Botones", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_2.setBounds(10, 149, 685, 67);
+		panel_1.add(panel_2);
 		
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(109, 123, 97, 29);
-		panel.add(btnNuevo);
+		panel_2.add(btnNuevo);
 		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		
+		btnGuardar = new JButton("Guardar");
+		panel_2.add(btnGuardar);
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnModificar = new JButton("Modificar");
+		panel_2.add(btnModificar);
+		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnEliminar = new JButton("Eliminar");
+		panel_2.add(btnEliminar);
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnSalir = new JButton("Salir");
+		panel_2.add(btnSalir);
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		panel_3 = new JPanel();
+		panel_3.setBackground(SystemColor.activeCaption);
+		panel_3.setBorder(new TitledBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)), "Area de Busqueda", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.window));
+		panel_3.setBounds(10, 225, 685, 253);
+		panel_1.add(panel_3);
+		panel_3.setLayout(null);
+		
+		hab_buscar = new JTextField();
+		hab_buscar.setBounds(213, 26, 194, 32);
+		panel_3.add(hab_buscar);
+		hab_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		hab_buscar.setColumns(10);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.setBounds(423, 26, 97, 32);
+		panel_3.add(btnBuscar);
+		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(75, 223, 652, 183);
-		panel.add(scrollPane);
+		scrollPane.setBounds(10, 69, 665, 173);
+		panel_3.add(scrollPane);
 		
 		tableHabitacion = new JTable();
+		tableHabitacion.setToolTipText("Preciona Enter para modificar o para eliminar.");
 		tableHabitacion.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -143,51 +218,8 @@ public class FormHabitacion extends JDialog {
 		tableHabitacion.getColumnModel().getColumn(1).setPreferredWidth(340);
 		scrollPane.setViewportView(tableHabitacion);
 		
-		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(371, 123, 109, 29);
-		panel.add(btnModificar);
-		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(509, 123, 105, 29);
-		panel.add(btnEliminar);
-		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		
-		hab_buscar = new JTextField();
-		hab_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
-		hab_buscar.setBounds(235, 180, 194, 32);
-		panel.add(hab_buscar);
-		hab_buscar.setColumns(10);
-		
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscar.setBounds(439, 180, 97, 32);
-		panel.add(btnBuscar);
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(544, 69, 185, 39);
-		panel.add(scrollPane_2);
-		
-		hab_observacion = new JTextField();
-		hab_observacion.setEditable(false);
-		hab_observacion.setFont(new Font("Tahoma", Font.BOLD, 13));
-		scrollPane_2.setViewportView(hab_observacion);
-		hab_observacion.setColumns(10);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(UIManager.getBorder("CheckBox.border"));
-		panel_1.setBackground(SystemColor.activeCaption);
-		panel_1.setBounds(0, 0, 806, 43);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblNewLabel_1 = new JLabel("Habitacion");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
-		lblNewLabel_1.setBounds(331, 11, 144, 32);
-		panel_1.add(lblNewLabel_1);
-		
 		HabitacionController controlador=new HabitacionController(this);
-		controlador.listarHabitacion();
+		controlador.listarDescrip();
         controlador.ocultarBoton();
 	}
 
@@ -294,5 +326,4 @@ public class FormHabitacion extends JDialog {
 	public void setBtnNuevo(JButton btnNuevo) {
 		this.btnNuevo = btnNuevo;
 	}
-	
 }

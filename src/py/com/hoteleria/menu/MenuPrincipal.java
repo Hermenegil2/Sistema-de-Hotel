@@ -41,6 +41,9 @@ public class MenuPrincipal extends JFrame {
 	private JMenuItem itemListadoDeServicio;
 	private JMenuItem itemInformeDeHospedaje;
 	private JMenuItem itemInformeDePago;
+	private JMenuItem ItemHospedaje;
+	private JMenuItem ItemCobranza;
+	private JPanel panel_1;
 
 	/**
 	 * Launch the application.
@@ -62,6 +65,7 @@ public class MenuPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public MenuPrincipal() {
+		getContentPane().setBackground(SystemColor.activeCaption);
 		setExtendedState(MAXIMIZED_BOTH);
 		setBounds(100, 100, 800, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,11 +78,11 @@ public class MenuPrincipal extends JFrame {
 		mnProceso_1.setFont(new Font("Segoe UI", Font.BOLD | Font.ITALIC, 20));
 		menuBar.add(mnProceso_1);
 		
-		JMenuItem mntmHospedaje = new JMenuItem("Hospedaje");
-		mnProceso_1.add(mntmHospedaje);
+		ItemHospedaje = new JMenuItem("Hospedaje");
+		mnProceso_1.add(ItemHospedaje);
 		
-		JMenuItem mntmCobranza = new JMenuItem("Cobranza");
-		mnProceso_1.add(mntmCobranza);
+		ItemCobranza = new JMenuItem("Cobranza");
+		mnProceso_1.add(ItemCobranza);
 		
 		JMenu mnProceso = new JMenu("");
 		mnProceso.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\TABLAS.png"));
@@ -126,48 +130,17 @@ public class MenuPrincipal extends JFrame {
 		mnConfiguraciones.add(itemConfiguraciones);
 		getContentPane().setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(UIManager.getBorder("CheckBox.border"));
-		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 0, 1354, 52);
-		getContentPane().add(panel);
-		
-		nombre = new JTextField();
-		panel.add(nombre);
-		nombre.setEditable(false);
-		nombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
-		nombre.setColumns(10);
-		
-		telefono = new JTextField();
-		panel.add(telefono);
-		telefono.setEditable(false);
-		telefono.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
-		telefono.setColumns(10);
-		
-		btnHospedaje = new JButton("");
-		btnHospedaje.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\hospedaje.png"));
-		btnHospedaje.setBounds(10, 99, 221, 52);
-		getContentPane().add(btnHospedaje);
-		
-		btnConbranza = new JButton("");
-		btnConbranza.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\cobranza.png"));
-		btnConbranza.setBounds(10, 166, 221, 52);
-		getContentPane().add(btnConbranza);
-		
 		btnClientes = new JButton("");
+		btnClientes.setForeground(new Color(30, 144, 255));
+		btnClientes.setFont(new Font("Tahoma", Font.BOLD, 18));
 		btnClientes.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\clientes.png"));
-		btnClientes.setBounds(1146, 99, 156, 52);
+		btnClientes.setBounds(1146, 99, 160, 52);
 		getContentPane().add(btnClientes);
 		
 		btnSalir = new JButton("");
 		btnSalir.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\SALIR.png"));
 		btnSalir.setBounds(1168, 162, 119, 44);
 		getContentPane().add(btnSalir);
-		
-		JLabel lblNewLabel_1 = new JLabel("Version 1.1");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
-		lblNewLabel_1.setBounds(10, 581, 231, 52);
-		getContentPane().add(lblNewLabel_1);
 		
 		JLabel lblAutor = new JLabel("Autores:");
 		lblAutor.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
@@ -184,12 +157,53 @@ public class MenuPrincipal extends JFrame {
 		lblMyrianBarrios.setBounds(1223, 537, 121, 25);
 		getContentPane().add(lblMyrianBarrios);
 		
+		panel_1 = new JPanel();
+		panel_1.setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+		panel_1.setBackground(SystemColor.activeCaption);
+		panel_1.setBounds(10, 11, 1334, 646);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+		
+		btnConbranza = new JButton("");
+		btnConbranza.setBounds(31, 151, 221, 52);
+		panel_1.add(btnConbranza);
+		btnConbranza.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\cobranza.png"));
+		
+		btnHospedaje = new JButton("");
+		btnHospedaje.setBounds(31, 88, 221, 52);
+		panel_1.add(btnHospedaje);
+		btnHospedaje.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\hospedaje.png"));
+		
+		JLabel lblNewLabel_1 = new JLabel("Version 1.4");
+		lblNewLabel_1.setBounds(32, 583, 231, 52);
+		panel_1.add(lblNewLabel_1);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 20));
+		
 		JLabel lblNewLabel = new JLabel("Sabado, 23 Mayo 2017");
+		lblNewLabel.setBounds(10, 65, 1311, 570);
+		panel_1.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\\u00EDndice.jpg"));
 		lblNewLabel.setForeground(Color.ORANGE);
 		lblNewLabel.setBackground(SystemColor.activeCaption);
-		lblNewLabel.setBounds(0, 0, 1354, 668);
-		getContentPane().add(lblNewLabel);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 11, 1314, 52);
+		panel_1.add(panel);
+		panel.setBorder(UIManager.getBorder("CheckBox.border"));
+		panel.setBackground(SystemColor.activeCaption);
+		
+		nombre = new JTextField();
+		panel.add(nombre);
+		nombre.setEditable(false);
+		nombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		nombre.setColumns(10);
+		
+		telefono = new JTextField();
+		panel.add(telefono);
+		telefono.setEditable(false);
+		telefono.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 30));
+		telefono.setColumns(10);
 		
 		@SuppressWarnings("unused")
 		FormController controlador=new FormController(this);
@@ -315,5 +329,21 @@ public class MenuPrincipal extends JFrame {
 
 	public void setBtnClientes(JButton btnClientes) {
 		this.btnClientes = btnClientes;
+	}
+
+	public JMenuItem getItemHospedaje() {
+		return ItemHospedaje;
+	}
+
+	public void setItemHospedaje(JMenuItem itemHospedaje) {
+		ItemHospedaje = itemHospedaje;
+	}
+
+	public JMenuItem getItemCobranza() {
+		return ItemCobranza;
+	}
+
+	public void setItemCobranza(JMenuItem itemCobranza) {
+		ItemCobranza = itemCobranza;
 	}
 }

@@ -10,34 +10,31 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-
 import java.awt.Font;
-
 import javax.swing.UIManager;
-
 import py.com.hoteleria.controller.CobranzaController;
-
 import java.awt.SystemColor;
-
-import com.toedter.calendar.JDateChooser;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.BevelBorder;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class FormCobranza extends JDialog {
 	private JTextField Ccodigo;
-	private JTextField CnroDeuda;
-	private JTextField CcodCliente;
-	private JTextField CmontoPagado;
+	public static JTextField CnroDeuda;
+	public static JTextField CcodCliente;
+	public static JTextField CmontoPagado;
 	private JTextField textField;
 	private JTable CtablaCobranza;
 	private JButton btnBuscarDuedas;
-	private JButton btnBuscarClientes;
 	private JButton btnNuevo;
 	private JButton btnGuardar;
 	private JButton btnModificar;
 	private JButton btnEliminar;
 	private JButton btnSalir;
-	private JDateChooser Cfecha;
-	private JPanel panel_1;
+	public static JTextField Cfecha;
 
 	/**
 	 * Launch the application.
@@ -62,133 +59,13 @@ public class FormCobranza extends JDialog {
 	public FormCobranza() {
 		setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 14));
 		setTitle("Formulario de Cobranza");
-		setBounds(100, 100,800, 500);
+		setBounds(100, 100,967, 500);
 		getContentPane().setLayout(null);
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(SystemColor.activeCaption);
-		panel.setBounds(0, 43, 784, 418);
-		getContentPane().add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblCodigo = new JLabel("Nro. Cobranza:");
-		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblCodigo.setBounds(10, 31, 122, 28);
-		panel.add(lblCodigo);
-		
-		Ccodigo = new JTextField();
-		Ccodigo.setEnabled(false);
-		Ccodigo.setBounds(142, 29, 178, 30);
-		panel.add(Ccodigo);
-		Ccodigo.setColumns(10);
-		
-		JLabel lblNombre = new JLabel("Fecha:");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNombre.setBounds(10, 80, 144, 14);
-		panel.add(lblNombre);
-		
-		JLabel lblNewLabel = new JLabel("Nro. Deuda:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblNewLabel.setBounds(343, 49, 108, 14);
-		panel.add(lblNewLabel);
-		
-		CnroDeuda = new JTextField();
-		CnroDeuda.setBounds(481, 39, 86, 30);
-		panel.add(CnroDeuda);
-		CnroDeuda.setColumns(10);
-		
-		JLabel lblRuc = new JLabel("Codigo del Cliente:");
-		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblRuc.setBounds(343, 94, 144, 14);
-		panel.add(lblRuc);
-		
-		CcodCliente = new JTextField();
-		CcodCliente.setBounds(481, 89, 86, 30);
-		panel.add(CcodCliente);
-		CcodCliente.setColumns(10);
-		
-		JLabel lblDireccion = new JLabel("Monto Pagado:");
-		lblDireccion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
-		lblDireccion.setBounds(10, 130, 122, 14);
-		panel.add(lblDireccion);
-		
-		CmontoPagado = new JTextField();
-		CmontoPagado.setBounds(142, 120, 178, 30);
-		panel.add(CmontoPagado);
-		CmontoPagado.setColumns(10);
-		
-		btnBuscarDuedas = new JButton("Buscar");
-		btnBuscarDuedas.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscarDuedas.setBounds(570, 41, 89, 28);
-		panel.add(btnBuscarDuedas);
-		
-		btnBuscarClientes = new JButton("Buscar");
-		btnBuscarClientes.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscarClientes.setBounds(570, 88, 89, 31);
-		panel.add(btnBuscarClientes);
-		
-		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnNuevo.setBounds(10, 167, 144, 47);
-		panel.add(btnNuevo);
-		
-		btnGuardar = new JButton("Guardar");
-		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnGuardar.setBounds(164, 167, 144, 47);
-		panel.add(btnGuardar);
-		
-		btnModificar = new JButton("Modificar");
-		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnModificar.setBounds(318, 167, 144, 47);
-		panel.add(btnModificar);
-		
-		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnEliminar.setBounds(472, 167, 144, 47);
-		panel.add(btnEliminar);
-		
-		btnSalir = new JButton("Salir");
-		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnSalir.setBounds(626, 167, 144, 47);
-		panel.add(btnSalir);
-		
-		textField = new JTextField();
-		textField.setBounds(142, 225, 178, 47);
-		panel.add(textField);
-		textField.setColumns(10);
-		
-		JButton btnBuscar_1 = new JButton("Buscar");
-		btnBuscar_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		btnBuscar_1.setBounds(328, 225, 144, 47);
-		panel.add(btnBuscar_1);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 283, 764, 104);
-		panel.add(scrollPane);
-		
-		CtablaCobranza = new JTable();
-		CtablaCobranza.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Codigo", "Fecha", "Monto Pagado", "Deuda", "Cliente"
-			}
-		));
-		scrollPane.setViewportView(CtablaCobranza);
-		
-		Cfecha = new JDateChooser();
-		Cfecha.setBounds(142, 70, 178, 30);
-		panel.add(Cfecha);
-		
-		panel_1 = new JPanel();
-		panel_1.setBackground(SystemColor.inactiveCaption);
-		panel_1.setBounds(10, 10, 764, 211);
-		panel.add(panel_1);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(SystemColor.activeCaption);
 		panel_2.setBorder(UIManager.getBorder("CheckBox.border"));
-		panel_2.setBounds(0, 0, 784, 43);
+		panel_2.setBounds(0, 0, 951, 43);
 		getContentPane().add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -196,8 +73,129 @@ public class FormCobranza extends JDialog {
 		lblCobranza.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 25));
 		lblCobranza.setBounds(304, 11, 146, 32);
 		panel_2.add(lblCobranza);
+		
+		btnBuscarDuedas = new JButton("Buscar");
+		btnBuscarDuedas.setBounds(535, 410, 89, 28);
+		getContentPane().add(btnBuscarDuedas);
+		btnBuscarDuedas.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnSalir = new JButton("Salir");
+		btnSalir.setBounds(833, 315, 75, 47);
+		getContentPane().add(btnSalir);
+		btnSalir.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setBounds(472, 170, 131, 47);
+		getContentPane().add(btnEliminar);
+		btnEliminar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnNuevo = new JButton("Nuevo");
+		btnNuevo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNuevo.setBounds(472, 54, 131, 47);
+		getContentPane().add(btnNuevo);
+		btnNuevo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnGuardar = new JButton("Guardar");
+		btnGuardar.setBounds(690, 315, 109, 47);
+		getContentPane().add(btnGuardar);
+		btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		btnModificar = new JButton("Modificar");
+		btnModificar.setBounds(472, 112, 131, 47);
+		getContentPane().add(btnModificar);
+		btnModificar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		textField = new JTextField();
+		textField.setBounds(10, 403, 178, 30);
+		getContentPane().add(textField);
+		textField.setColumns(10);
+		
+		JButton btnBuscar_1 = new JButton("Buscar");
+		btnBuscar_1.setBounds(318, 401, 144, 30);
+		getContentPane().add(btnBuscar_1);
+		btnBuscar_1.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 54, 452, 287);
+		getContentPane().add(scrollPane);
+		
+		CtablaCobranza = new JTable();
+		CtablaCobranza.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Cod Deuda", "Cliente", "Monto Pagado", "Deuda"
+			}
+		));
+		scrollPane.setViewportView(CtablaCobranza);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, new Color(255, 255, 255), new Color(255, 255, 255), new Color(255, 255, 255), new Color(255, 255, 255)), "Area de Trabajo", TitledBorder.CENTER, TitledBorder.TOP, null, SystemColor.windowText));
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(613, 54, 330, 253);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JLabel lblCodigo = new JLabel("Nro. Cobranza:");
+		lblCodigo.setBounds(10, 28, 122, 28);
+		panel.add(lblCodigo);
+		lblCodigo.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		JLabel lblNombre = new JLabel("Fecha:");
+		lblNombre.setBounds(10, 84, 144, 14);
+		panel.add(lblNombre);
+		lblNombre.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		JLabel lblDireccion = new JLabel("Monto A Pagar:");
+		lblDireccion.setBounds(10, 126, 122, 14);
+		panel.add(lblDireccion);
+		lblDireccion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		JLabel lblNewLabel = new JLabel("Nro. Deuda:");
+		lblNewLabel.setBounds(10, 168, 108, 14);
+		panel.add(lblNewLabel);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		JLabel lblRuc = new JLabel("Codigo del Cliente:");
+		lblRuc.setBounds(10, 210, 144, 14);
+		panel.add(lblRuc);
+		lblRuc.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		
+		Ccodigo = new JTextField();
+		Ccodigo.setBounds(142, 18, 178, 28);
+		panel.add(Ccodigo);
+		Ccodigo.setEnabled(false);
+		Ccodigo.setColumns(10);
+		
+		Cfecha = new JTextField();
+		Cfecha.setEditable(false);
+		Cfecha.setColumns(10);
+		Cfecha.setBounds(142, 64, 178, 28);
+		panel.add(Cfecha);
+		
+		CmontoPagado = new JTextField();
+		CmontoPagado.setEditable(false);
+		CmontoPagado.setBounds(142, 110, 178, 28);
+		panel.add(CmontoPagado);
+		CmontoPagado.setColumns(10);
+		
+		CnroDeuda = new JTextField();
+		CnroDeuda.setEditable(false);
+		CnroDeuda.setBounds(142, 156, 178, 28);
+		panel.add(CnroDeuda);
+		CnroDeuda.setColumns(10);
+		
+		CcodCliente = new JTextField();
+		CcodCliente.setBounds(142, 202, 178, 28);
+		panel.add(CcodCliente);
+		CcodCliente.setEditable(false);
+		CcodCliente.setColumns(10);
 		CobranzaController controller=new CobranzaController(this);
 		controller.listarCobranza();
+		controller.obtenerUltimoId();
 
 	}
 
@@ -210,11 +208,13 @@ public class FormCobranza extends JDialog {
 	}
 
 
-	public JDateChooser getCfecha() {
+	
+
+	public JTextField getCfecha() {
 		return Cfecha;
 	}
 
-	public void setCfecha(JDateChooser cfecha) {
+	public void setCfecha(JTextField cfecha) {
 		Cfecha = cfecha;
 	}
 
@@ -256,14 +256,6 @@ public class FormCobranza extends JDialog {
 
 	public void setBtnBuscarDueda(JButton btnBuscarDueda) {
 		this.btnBuscarDuedas = btnBuscarDueda;
-	}
-
-	public JButton getBtnBuscarCliente() {
-		return btnBuscarClientes;
-	}
-
-	public void setBtnBuscarCliente(JButton btnBuscarCliente) {
-		this.btnBuscarClientes = btnBuscarCliente;
 	}
 
 	public JButton getBtnNuevo() {

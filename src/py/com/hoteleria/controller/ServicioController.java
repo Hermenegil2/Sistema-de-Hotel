@@ -34,6 +34,7 @@ public class ServicioController implements ActionListener,KeyListener{
 		ventana.getSer_buscar().addActionListener(this);
 		ventana.getBtnBuscar().addActionListener(this);
 		ventana.getSer_monto().addKeyListener(this);
+		ventana.getBtnGuardar().addKeyListener(this);
 	}
 	private void habilitarCampo() {
 		this.ventana.getSer_descri().setEditable(true);
@@ -68,25 +69,33 @@ public class ServicioController implements ActionListener,KeyListener{
 			JOptionPane.showMessageDialog(null, "Debe Ingresar el Monto");
 			ventana.getSer_monto().requestFocus();
 		} else{
-		servicio=new Servicio();
-		servicio.setDescripcionServicio(ventana.getSer_descri().getText());
-		servicio.setMonto(Double.parseDouble(ventana.getSer_monto().getText()));
-		servicio.setObservacion(ventana.getSer_observacion().getText());
-		dao=new ServicioDAO();
-        if(modificar==false){
-        	dao.guardar(servicio);
-		}else{
-			servicio.setCodigo(Integer.parseInt(ventana.getSer_codigo().getText()));
-			dao.modificarServicio(servicio);
-		}
-		}
+			if (servicio !=null ) {
+				servicio=new Servicio();
+				servicio.setDescripcionServicio(ventana.getSer_descri().getText());
+				servicio.setMonto(Double.parseDouble(ventana.getSer_monto().getText()));
+				servicio.setObservacion(ventana.getSer_observacion().getText());
+				dao=new ServicioDAO();
+		        if(modificar==false){
+		        	dao.guardar(servicio);
+		        	limpiarTabla();
+					listarServicios();
+					limpiarCampo();
+				}else{
+					servicio.setCodigo(Integer.parseInt(ventana.getSer_codigo().getText()));
+					dao.modificarServicio(servicio);
+				}
+				} else {
+					JOptionPane.showMessageDialog(null, "El Servicio no fue guardada");
+				}
+			}
+		
 	}
 
 	@SuppressWarnings("static-access")
 	public void eliminar(){
 		servicio=new Servicio();
 		servicio.setCodigo(Integer.parseInt(ventana.getSer_codigo().getText()));
-		dao.eliminar(servicio);
+		dao.eliminarServicio(servicio);
 		
 	}
 	public  void listarServicios(){
@@ -157,9 +166,6 @@ public class ServicioController implements ActionListener,KeyListener{
 		}
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
 			registrarCliente();
-			limpiarTabla();
-			listarServicios();
-			limpiarCampo();
 			modificar=false;
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
@@ -198,6 +204,7 @@ public class ServicioController implements ActionListener,KeyListener{
 				eliminar();
 				limpiarTabla();
 				listarServicios();
+				limpiarCampo();
 				ventana.getBtnEliminar().setVisible(false);
 				ventana.getBtnModificar().setVisible(true);
 				
@@ -223,7 +230,12 @@ public class ServicioController implements ActionListener,KeyListener{
 			
 		
 		}
-		
+		if (e.getSource().equals(ventana.getBtnGuardar())) {
+			if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			registrarCliente();
+			modificar=false;
+		}
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
