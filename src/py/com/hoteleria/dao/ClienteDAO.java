@@ -37,7 +37,7 @@ public class ClienteDAO {
 	    try {
 			Conexion.sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "La sentecia no fue ejecutada"+e.getMessage());
+			JOptionPane.showMessageDialog(null, "El Cliente no se puede eliminar por que es referida a otra tabla.");
 			e.printStackTrace();
 		}
 	    Conexion.cerrarConexion();

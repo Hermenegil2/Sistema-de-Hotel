@@ -59,6 +59,7 @@ public class FormServicio extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormServicio() {
+		setModal(true);
 		setTitle("Formulario de Servicio");
 		getContentPane().setBackground(SystemColor.activeCaption);
 		setBounds(100, 100,712, 550);

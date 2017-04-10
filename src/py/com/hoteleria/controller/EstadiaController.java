@@ -8,15 +8,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
 import py.com.hoteleria.dao.DetalleDAO;
 import py.com.hoteleria.dao.EstadiaDAO;
 import py.com.hoteleria.dao.HabitacionDAO;
@@ -37,6 +40,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	private Estadia estadia;
 	private boolean modificar;
 	Double total=0.0;
+	
 //	DecimalFormat formatea = new DecimalFormat("###,###.##"+" Gs");
 	
 	
@@ -64,6 +68,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		ventana.getBtnGuardar().addKeyListener(this);
 		ventana.getBtnCierre_C().addKeyListener(this);
 		ventana.getTableDetalle().addKeyListener(this);
+		ventana.getEfechaSalida().addKeyListener(this);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -77,6 +82,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		} else{
 			if (estadia !=null) {
 				estadia=new Estadia();
+				 estadia.setFecha(ventana.getEfecha().getText());
 				 estadia.getCliente().setCodigo(Integer.parseInt(ventana.getECodCliente().getText()));
 				 estadia.getHabitacion().setCodigo(Integer.parseInt(ventana.getECodHab().getText()));
 				 estadia.setObservacion(ventana.getEobservacion().getText());
@@ -88,10 +94,23 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 					limpiarTabla();
 					listarEstadia();
 					limpiarCampo();
+					ventana.getEcodigo().setText("");
+					ventana.getEfecha().setText("");
+					ventana.getBtnGuardar().setVisible(false);
+					ventana.getBtnDetalle().setVisible(false);
 		   
 				}else {
 					estadia.setCodigo(Integer.parseInt(ventana.getEcodigo().getText()));
 					dao.modificarEstadia(estadia);
+					limpiarCampo();
+					limpiarTabla();
+					listarEstadia();
+					limpiarCampo();
+					ventana.getEcodigo().setText("");
+					ventana.getEfecha().setText("");
+					ventana.getBtnGuardar().setVisible(false);
+					ventana.getBtnModificar().setVisible(false);
+					ventana.getBtnDetalle().setVisible(false); 
 				}
 					
 		        		
@@ -132,7 +151,12 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		listarEstadia();
 		limpiarCampoEstadia();
 		limpiarDetalle();
-		
+		actualizar();
+		limpiarCampoEstadia();
+		limpiarDetalle();
+		ventana.getEmontoDescue().setEditable(false);
+		ventana.getEfechaSalida().setEditable(false);
+		ventana.getBtnDetalle().setVisible(false);
 	}
 		}
 	
@@ -282,6 +306,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		desabilitar();
 		ventana.getBtnGuardar().setVisible(false);
 		ventana.getBtnCierre_C().setVisible(false);
+		ventana.getBtnDetalle().setVisible(true);
 		ventana.getEfechaSalida().setText("");
 		ventana.getEmonto().setText("");
 		ventana.getEmontoDescue().setText("");
@@ -353,22 +378,18 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	}
 	
 	private void fecha() {  
-		 Calendar c=Calendar.getInstance();
-		 String dia = Integer.toString(c.get(Calendar.DATE));
-		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
-		 String ano =Integer.toString(c.get(Calendar.YEAR));
-		 ventana.getEfechaSalida().setText(dia+"/"+mes+"/"+ano); 
+		Date ahora = new Date();
+        SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println(formateador.format(ahora));
+		 ventana.getEfechaSalida().setText(formateador.format(ahora)); 
  }
+ 
 	private void fechaEstadia() {  
-		 Calendar c=Calendar.getInstance();
-		 String dia = Integer.toString(c.get(Calendar.DATE));
-		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
-		 String ano =Integer.toString(c.get(Calendar.YEAR));
-		 ventana.getEfecha().setText(dia+"/"+mes+"/"+ano); 
-
-		
-		
-		}
+		Date ahora = new Date();
+        SimpleDateFormat formateador = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println(formateador.format(ahora));
+		 ventana.getEfecha().setText(formateador.format(ahora)); 
+ }
 	private void obtenerUltimoId() {
 		estadia=EstadiaDAO.obtenerUltimoId();
 		ventana.getEcodigo().setText(Integer.toString(estadia.getCodigo()));
@@ -396,6 +417,38 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
         ventana.getEmonto().setText(total.toString());
 	}
 	
+private void diferenciaDiaModificable(){
+	
+	String fechaActual=ventana.getEfechaSalida().getText();
+	String[] aFechaActu = fechaActual.split("/");
+    Integer diaA = Integer.parseInt(aFechaActu[0]);
+    Integer mesA = Integer.parseInt(aFechaActu[1]);
+    Integer añoA = Integer.parseInt(aFechaActu[2]);
+	Calendar calendarA = new GregorianCalendar(añoA,mesA-1,diaA); 
+	java.sql.Date fechaA = new java.sql.Date(calendarA.getTimeInMillis());
+	
+		
+		final long MILLSECS_PER_DAY = 24 * 60 * 60 * 1000; //Milisegundos al día 
+		String fechaInicio=ventana.getEfecha().getText();
+		String[] aFechaIng = fechaInicio.split("/");
+        Integer dia = Integer.parseInt(aFechaIng[0]);
+        Integer mes = Integer.parseInt(aFechaIng[1]);
+        Integer año = Integer.parseInt(aFechaIng[2]);
+		Calendar calendar = new GregorianCalendar(año,mes-1,dia); 
+		java.sql.Date fecha = new java.sql.Date(calendar.getTimeInMillis());
+
+		long diferencia = (fechaA.getTime() - fecha.getTime() )/MILLSECS_PER_DAY; 
+		if (fecha.getTime() > fechaA.getTime()) {
+			JOptionPane.showMessageDialog(null, "La fecha de Entrada NO debe ser Mayor de la Fecha Salida");
+		} else {
+		Integer fila = this.ventana.getTableEstadia().getSelectedRow();
+		String dato =String.valueOf(this.ventana.getTableEstadia().getValueAt( fila,4));
+		Double datos=Double.parseDouble(dato);
+	    Double servicio=Double.parseDouble(ventana.getEtotalServicio().getText());
+		total=((diferencia+1)*datos)+servicio;
+        ventana.getEmonto().setText(total.toString());
+	}
+}
 	public void ocultarBoton() {
 		this.ventana.getBtnGuardar().setVisible(false);
 		this.ventana.getBtnModificar().setVisible(false);
@@ -404,6 +457,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		this.ventana.getBtnCierre_C().setVisible(false);
 		this.ventana.getBtnBuscarCliente().setVisible(false);
 		this.ventana.getBtnBuscarHabitacion().setVisible(false);
+		this.ventana.getBtnDetalle().setVisible(false);
 	}
 	
 	
@@ -469,27 +523,7 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		
 
 	}
-	/*
-	private void pasarCampoCobranza() {
-		FormCobranza.CcodCliente.setText(FormEstadia.ECodCliente.getText());
-        FormCobranza.CmontoPagado.setText(FormEstadia.EmontoTotal.getText());
-        
-        Calendar c=Calendar.getInstance();
-		 String dia = Integer.toString(c.get(Calendar.DATE));
-		 String mes =Integer.toString(c.get(Calendar.MONTH)+1);
-		 String ano =Integer.toString(c.get(Calendar.YEAR));
-		 FormCobranza.Cfecha.setText(dia+"/"+mes+"/"+ano); 
-	}
-	/*
-	@SuppressWarnings("static-access")
-	private void traerNumeroDeuda() {
-		int id=Integer.parseInt(ventana.getEcodigo().getText());
-		dao=new EstadiaDAO();
-		Deuda deuda=new Deuda();
-		deuda=dao.traerNroDeuda(id);
-		FormCobranza.CnroDeuda.setText(Integer.toString(deuda.getCodigo()));
-	}
-	*/
+	
 	private void eliminarDetalleServicio() {
 		Detalle detalle=new Detalle();	
 		Integer fila =ventana.getTableDetalle().getSelectedRow();
@@ -526,31 +560,57 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(ventana.getBtnCancelar())) {
+			limpiarCampo();
+			limpiarTablaDetalle();
+			ventana.getEcodigo().setText("");
+			ventana.getEfecha().setText("");
+			ventana.getEfechaSalida().setText("");
+			ventana.getEmontoTotal().setText("");
+			ventana.getBtnGuardar().setVisible(false);
+		}
 		
 		if (e.getSource().equals(ventana.getBtnDetalle())) {
-			FormDetalle f=new FormDetalle();
-			f.setLocationRelativeTo(null);
-			f.setVisible(true);
-			pasarCampoTablaDetalleServicio();
+			int row =ventana.getTableEstadia().getSelectedRow();
+			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
+			if (estado==false) {
+				JOptionPane.showMessageDialog(null, "La estadia Cerrada Ya no puede Cargar Detalle");
+			} else{
+				FormDetalle f=new FormDetalle();
+				f.setLocationRelativeTo(null);
+				f.setVisible(true);
+				pasarCampoTablaDetalleServicio();
+			}
 			
 		}
 		
 		if (e.getSource().equals(ventana.getBtnCierre())) {
-	    if (ventana.getEcodigo().getText().isEmpty() && ventana.getEfecha().getText().isEmpty() && ventana.getECodCliente().getText().isEmpty() && ventana.getECodHab().getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "El Campo no debe quedar Vacio");
-		} else {
-			habilitarCampoCierre();
-			fecha();
-		    diferenciaDia();
-			ventana.getEmontoDescue().requestFocus();
+			int row =ventana.getTableEstadia().getSelectedRow();
+			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
+			if (estado==false) {
+				limpiarTablaDetalle();
+				JOptionPane.showMessageDialog(null, "La estadia Cerrada No se puede Cerrar");
+			} else{
+				if (ventana.getEcodigo().getText().isEmpty() && ventana.getEfecha().getText().isEmpty() && ventana.getECodCliente().getText().isEmpty() && ventana.getECodHab().getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "El Campo no debe quedar Vacio");
+				} else {
+					habilitarCampoCierre();
+					fecha();
+					diferenciaDia();
+					ventana.getEmontoDescue().requestFocus();
+					ventana.getEfechaSalida().setEditable(true);
+				}
+			
+			
+			
 		}
+
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			limpiarCampo();
 			habilitarCampo();
 			limpiarDetalle();
 			obtenerUltimoId();
-			fechaEstadia();
 			this.ventana.getBtnGuardar().setVisible(true);
 			this.ventana.getBtnBuscarCliente().setEnabled(true);
 			this.ventana.getBtnBuscarHabitacion().setEnabled(true);
@@ -558,6 +618,9 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 			this.ventana.getBtnEliminar().setVisible(false);
 			this.ventana.getBtnModificar().setVisible(false);
 			this.ventana.getEtotalServicio().setText("");
+			this.ventana.getEfechaSalida().setText("");
+			this.ventana.getBtnCierre().setVisible(false);
+			fechaEstadia();
 		
 		}
 		
@@ -576,12 +639,12 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 			listarEstadia();
 		}
 		if (e.getSource().equals(ventana.getBtnCierre_C())) {
-			actualizar();
-//			FormCobranza form=new FormCobranza();
-//			form.setLocationRelativeTo(null);
-//			form.setVisible(true);
-//			pasarCampoCobranza();
-			//traerNumeroDeuda();
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Cerrar","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				actualizar();
+				
+				}
 			
 		}
 		
@@ -641,13 +704,24 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		}
 		}
 		if (e.getSource().equals(ventana.getBtnSalir())) {
-			this.ventana.dispose();
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres SALIR","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				this.ventana.dispose();
+			}
 		}
 		
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (e.getSource().equals(ventana.getEfechaSalida())) {
+			if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+				diferenciaDiaModificable();
+				
+			}
+		}
+		
 		if (e.getSource().equals(ventana.getTableDetalle())) {
 			int row =ventana.getTableEstadia().getSelectedRow();
 			Boolean estado=Boolean.parseBoolean(ventana.getTableEstadia().getValueAt(row, 5).toString().trim());
@@ -668,13 +742,15 @@ public class EstadiaController implements ActionListener,KeyListener,MouseListen
 		}
 		if (e.getSource().equals(ventana.getBtnCierre_C())) {
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
-			actualizar();
-			limpiarCampoEstadia();
-//			pasarCampoCobranza();
-			//traerNumeroDeuda();
-			limpiarDetalle();
+				if (JOptionPane.showConfirmDialog(new JDialog(),
+						"¿Seguro que Quieres Cerrar","Salir",
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+					actualizar();
+					
+					}
+				}
 		}
-		}
+		
 		
 		if(e.getSource().equals(ventana.getEBuscarEstadia())){
 			limpiarTabla();

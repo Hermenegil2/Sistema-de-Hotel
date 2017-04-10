@@ -32,7 +32,7 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 		ventana.getBtnSalir().addActionListener(this);
 		ventana.getCli_cedula().addKeyListener(this);
 		ventana.getCli_nombre().addKeyListener(this);
-		ventana.getBtnBuscar().addActionListener(this);
+		ventana.getClie_buscar().addKeyListener(this);
 		ventana.getBtnEliminar().addActionListener(this);
 		ventana.getCli_telefono().addKeyListener(this);
 		ventana.getBtnGuardar().addKeyListener(this);
@@ -108,9 +108,13 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 
 	@SuppressWarnings("static-access")
 	public void eliminar(){
-		cliente=new Cliente();
-		cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
-		dao.eliminar(cliente);
+		if (cliente !=null) {
+			cliente=new Cliente();
+			cliente.setCodigo(Integer.parseInt(ventana.getCli_codigo().getText()));
+			dao.eliminar(cliente);
+		} else {
+			JOptionPane.showMessageDialog(null, "Error al eliminar");
+		}
 		
 	}
 	public void listarClientes(){
@@ -261,11 +265,7 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 			}
 			
 		}
-		if (e.getSource().equals(ventana.getBtnBuscar())) {
-				limpiarTabla();
-				listarNombre();
-					
-		}
+		
 		
 		if (e.getSource().equals(ventana.getBtnEliminar())) {
 			if (JOptionPane.showConfirmDialog(new JDialog(),
@@ -285,6 +285,12 @@ public class ClienteController implements ActionListener,KeyListener,WindowListe
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (e.getSource().equals(ventana.getClie_buscar())) {
+			limpiarTabla();
+			listarNombre();
+				
+	}
+		
 		if(e.getSource().equals(ventana.getTableCliente())){
 			if(e.getKeyCode()==KeyEvent.VK_ENTER){
 				seleccionarFila();

@@ -83,6 +83,10 @@ public class ServicioController implements ActionListener,KeyListener{
 				}else{
 					servicio.setCodigo(Integer.parseInt(ventana.getSer_codigo().getText()));
 					dao.modificarServicio(servicio);
+					limpiarTabla();
+					listarServicios();
+					limpiarCampo();
+					ventana.getBtnGuardar().setVisible(false);
 				}
 				} else {
 					JOptionPane.showMessageDialog(null, "El Servicio no fue guardada");
@@ -167,6 +171,8 @@ public class ServicioController implements ActionListener,KeyListener{
 		if (e.getSource().equals(ventana.getBtnGuardar())) {
 			registrarCliente();
 			modificar=false;
+			desabilitarCampo();
+			ventana.getBtnModificar().setVisible(true);
 		}
 		if (e.getSource().equals(ventana.getBtnNuevo())) {
 			habilitarCampo();

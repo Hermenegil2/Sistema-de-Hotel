@@ -84,6 +84,10 @@ public class HabitacionController implements ActionListener,KeyListener,MouseLis
 			}else{
 				habita.setCodigo(Integer.parseInt(ventana.getHab_codigo().getText()));
 				dao.modificarHabitacion(habita);
+				limpiarTabla();
+				listarDescrip();
+				limpiarCampo();
+				
 			}
 			} else {
 				JOptionPane.showMessageDialog(null, "La habitacion no fue carga");

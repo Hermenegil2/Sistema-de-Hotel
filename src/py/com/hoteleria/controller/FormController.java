@@ -3,6 +3,9 @@ package py.com.hoteleria.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import py.com.hoteleria.abm.FormCliente;
 import py.com.hoteleria.abm.FormConfig;
 import py.com.hoteleria.abm.FormHabitacion;
@@ -61,7 +64,13 @@ public class FormController implements ActionListener {
 		}
 	
 		if (e.getSource().equals(ventana.getBtnSalir())) {
-			salir();
+			if (JOptionPane.showConfirmDialog(new JDialog(),
+					"¿Seguro que Quieres Salir","Salir",
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+				salir();
+				
+			}
+
 			
 		}
 		if (e.getSource().equals(ventana.getBtnConbranza())) {

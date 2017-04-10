@@ -55,6 +55,7 @@ public class FormHabitacion extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormHabitacion() {
+		setModal(true);
 		getContentPane().setBackground(SystemColor.activeCaption);
 		setTitle("Formulario Habitacion");
 		setBounds(100, 100,744, 550);
@@ -193,7 +194,7 @@ public class FormHabitacion extends JDialog {
 		hab_buscar = new JTextField();
 		hab_buscar.setBounds(213, 26, 194, 32);
 		panel_3.add(hab_buscar);
-		hab_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		hab_buscar.setFont(new Font("Tahoma", Font.BOLD, 16));
 		hab_buscar.setColumns(10);
 		
 		btnBuscar = new JButton("Buscar");

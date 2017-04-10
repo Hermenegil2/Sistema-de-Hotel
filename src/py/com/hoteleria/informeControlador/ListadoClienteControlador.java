@@ -7,11 +7,8 @@ import java.awt.event.KeyListener;
 import java.awt.print.PrinterException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTable.PrintMode;
 import javax.swing.table.DefaultTableModel;
 
 import py.com.hoteleria.dao.ClienteDAO;
@@ -20,8 +17,6 @@ import py.com.hoteleria.model.Cliente;
 
 public class ListadoClienteControlador implements ActionListener,KeyListener{
 	private ListadoClientes ventana;
-	private MessageFormat headerFormat;
-	private MessageFormat footerFormat;
 	
 	public ListadoClienteControlador(ListadoClientes v){
 		this.ventana=v;

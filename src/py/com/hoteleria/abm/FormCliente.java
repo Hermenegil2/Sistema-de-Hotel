@@ -67,6 +67,7 @@ public class FormCliente extends JDialog {
 	 * Create the dialog.
 	 */
 	public FormCliente() {
+		setModal(true);
 		getContentPane().setBackground(SystemColor.activeCaption);
 		setTitle("Formulario de Cliente");
 		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Hermenegil2\\Desktop\\Sistema de Hotel\\img\\formulariocliente.png"));
@@ -250,7 +251,7 @@ public class FormCliente extends JDialog {
 		clie_buscar.setBounds(163, 22, 190, 56);
 		panel_4.add(clie_buscar);
 		clie_buscar.setHorizontalAlignment(SwingConstants.CENTER);
-		clie_buscar.setFont(new Font("Tahoma", Font.BOLD, 13));
+		clie_buscar.setFont(new Font("Tahoma", Font.BOLD, 16));
 		clie_buscar.setColumns(10);
 		
 		JScrollPane scrollPane = new JScrollPane();

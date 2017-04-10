@@ -5,6 +5,8 @@ import java.util.Date;
 public class Estadia {
 	private int codigo;
 	private Date fechaEntrada;
+	private String fechaE;
+	private String fechaS;
 	private Cliente cliente;
 	private Habitacion habitacion;
 	private Date fechaSalida;
@@ -26,6 +28,22 @@ public class Estadia {
 		observacion="";
 		estado=true;
 		fecha="";
+	}
+
+	public String getFechaE() {
+		return fechaE;
+	}
+
+	public void setFechaE(String fechaE) {
+		this.fechaE = fechaE;
+	}
+
+	public String getFechaS() {
+		return fechaS;
+	}
+
+	public void setFechaS(String fechaS) {
+		this.fechaS = fechaS;
 	}
 
 	public String getFecha() {

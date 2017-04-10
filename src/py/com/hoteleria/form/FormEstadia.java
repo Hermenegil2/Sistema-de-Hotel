@@ -9,7 +9,9 @@ import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -28,6 +30,8 @@ import javax.swing.ImageIcon;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
+
 
 
 @SuppressWarnings("serial")
@@ -57,12 +61,15 @@ public class FormEstadia extends JDialog {
 	private JButton btnTodos;
 	private JButton btnCierre;
 	private JButton btnCancelar;
-	private JTextField EfechaSalida;
+	private JFormattedTextField EfechaSalida;
 	private JTabbedPane tabbedPane;
 	private JPanel panel_6;
 	private JButton btnCierre_C;
-	private JTextField Efecha;
+	private JFormattedTextField Efecha;
 	public static JTextField EmontoTotal;
+	private MaskFormatter formatoFechaEntrada;
+	private MaskFormatter formatoFechaSalida;
+	
 
 	/**
 	 * Launch the application.
@@ -259,9 +266,8 @@ public class FormEstadia extends JDialog {
 		lblFecha.setBounds(6, 60, 92, 14);
 		panel_2.add(lblFecha);
 		
-		Efecha = new JTextField();
+		Efecha = new JFormattedTextField(formatearFecha());
 		Efecha.setFont(new Font("SansSerif", Font.BOLD, 14));
-		Efecha.setEditable(false);
 		Efecha.setColumns(10);
 		Efecha.setBounds(91, 50, 240, 30);
 		panel_2.add(Efecha);
@@ -321,7 +327,16 @@ public class FormEstadia extends JDialog {
 			new String[] {
 				"Codigo", "Estadia", "CodSer", "DescriSer", "Monto"
 			}
-		));
+		) {
+			@SuppressWarnings("rawtypes")
+			Class[] columnTypes = new Class[] {
+				Object.class, Object.class, Object.class, Object.class, Double.class
+			};
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
 		scrollPane_2.setViewportView(tableDetalle);
 		
 		JLabel lblTotalServicio = new JLabel("Total Servicio:");
@@ -375,8 +390,7 @@ public class FormEstadia extends JDialog {
 		panel_4.add(lblCostoXHab);
 		lblCostoXHab.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		
-		EfechaSalida = new JTextField();
-		EfechaSalida.setEditable(false);
+		EfechaSalida = new JFormattedTextField(formatearFechaS());
 		EfechaSalida.setFont(new Font("SansSerif", Font.BOLD, 14));
 		EfechaSalida.setHorizontalAlignment(SwingConstants.CENTER);
 		EfechaSalida.setColumns(10);
@@ -583,9 +597,7 @@ public class FormEstadia extends JDialog {
 		return EfechaSalida;
 	}
 
-	public void setEfechaSalida(JTextField efechaSalida) {
-		EfechaSalida = efechaSalida;
-	}
+	
 
 	public JButton getBtnActivo() {
 		return btnActivo;
@@ -651,9 +663,7 @@ public class FormEstadia extends JDialog {
 		return Efecha;
 	}
 
-	public void setEfecha(JTextField efecha) {
-		Efecha = efecha;
-	}
+	
 
 	public JTextField getEmontoTotal() {
 		return EmontoTotal;
@@ -670,4 +680,32 @@ public class FormEstadia extends JDialog {
 	public void setEBuscarEstadia(JTextField eBuscarEstadia) {
 		EBuscarEstadia = eBuscarEstadia;
 	}
+	 private MaskFormatter formatearFecha() {
+			if (formatoFechaEntrada==null) {
+				try {
+					formatoFechaEntrada = new MaskFormatter("##/##/####");
+					formatoFechaEntrada.setPlaceholderCharacter('_');
+				} catch (ParseException e) {
+					
+					e.printStackTrace();
+				}
+				
+				
+			}
+		return formatoFechaEntrada;
+		}
+	 private MaskFormatter formatearFechaS() {
+			if (formatoFechaSalida==null) {
+				try {
+					formatoFechaSalida = new MaskFormatter("##/##/####");
+					formatoFechaSalida.setPlaceholderCharacter('_');
+				} catch (ParseException e) {
+					
+					e.printStackTrace();
+				}
+				
+				
+			}
+		return formatoFechaSalida;
+		}
 }
